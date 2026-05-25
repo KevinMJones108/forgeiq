@@ -1,0 +1,35 @@
+services:
+  - type: web
+    name: forgeiq-api
+    runtime: node
+    buildCommand: npm install
+    startCommand: node src/server.js
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: forgeiq-db
+          property: connectionString
+      - key: AUTH0_DOMAIN
+        sync: false
+      - key: AUTH0_AUDIENCE
+        sync: false
+      - key: ELEVEN_LABS_API_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: PIPEDRIVE_API_TOKEN
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: VAPI_API_KEY
+        sync: false
+
+databases:
+  - name: forgeiq-db
+    databaseName: forgeiq
+    user: forgeiq_user
+    plan: starter
