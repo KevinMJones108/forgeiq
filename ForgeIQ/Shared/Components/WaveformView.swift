@@ -1,0 +1,116 @@
+import SwiftUI
+
+struct WaveformView: View {
+    let audioLevel: Float
+    private let barCount = 12
+    private let minHeight: CGFloat = 4
+    private let maxHeight: CGFloat = 60
+
+    var body: some View {
+        TimelineView(.animation) { timeline in
+            HStack(spacing: 4) {
+                ForEach(0..<barCount, id: \.self) { index in
+                    BarView(
+                        height: calculateBarHeight(for: index),
+                        color: Color(hex: "#00C853") // ForgeGreen
+                    )
+                }
+            }
+        }
+    }
+
+    private func calculateBarHeight(for index: Int) -> CGFloat {
+        if audioLevel < 0.01 {
+            return minHeight
+        }
+
+        // Create variation across bars for visual interest
+        // Center bars respond more, edge bars less
+        let centerOffset = abs(Float(index) - Float(barCount) / 2.0)
+        let centerWeight = 1.0 - (centerOffset / Float(barCount / 2)) * 0.5
+
+        // Add slight variation based on bar position
+        let variation = sin(Float(index) * 0.5) * 0.2 + 1.0
+
+        // Calculate final height
+        let scaledLevel = CGFloat(audioLevel * centerWeight * variation)
+        let targetHeight = minHeight + (maxHeight - minHeight) * scaledLevel
+
+        return max(minHeight, min(maxHeight, targetHeight))
+    }
+}
+
+struct BarView: View {
+    let height: CGFloat
+    let color: Color
+
+    var body: some View {
+        RoundedRectangle(cornerRadius: 2)
+            .fill(color)
+            .frame(width: 6, height: height)
+            .animation(.spring(response: 0.3, dampingFraction: 0.6), value: height)
+    }
+}
+
+// MARK: - Color Extension for Hex
+
+extension Color {
+    init(hex: String) {
+        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        var int: UInt64 = 0
+        Scanner(string: hex).scanHexInt64(&int)
+        let a, r, g, b: UInt64
+        switch hex.count {
+        case 3: // RGB (12-bit)
+            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
+        case 6: // RGB (24-bit)
+            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
+        case 8: // ARGB (32-bit)
+            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
+        default:
+            (a, r, g, b) = (255, 0, 0, 0)
+        }
+
+        self.init(
+            .sRGB,
+            red: Double(r) / 255,
+            green: Double(g) / 255,
+            blue: Double(b) / 255,
+            opacity: Double(a) / 255
+        )
+    }
+}
+
+// MARK: - Preview
+
+struct WaveformView_Previews: PreviewProvider {
+    static var previews: some View {
+        VStack(spacing: 30) {
+            VStack {
+                Text("Silent (0.0)")
+                    .foregroundColor(.white)
+                WaveformView(audioLevel: 0.0)
+            }
+
+            VStack {
+                Text("Low (0.3)")
+                    .foregroundColor(.white)
+                WaveformView(audioLevel: 0.3)
+            }
+
+            VStack {
+                Text("Medium (0.6)")
+                    .foregroundColor(.white)
+                WaveformView(audioLevel: 0.6)
+            }
+
+            VStack {
+                Text("High (1.0)")
+                    .foregroundColor(.white)
+                WaveformView(audioLevel: 1.0)
+            }
+        }
+        .padding()
+        .background(Color(hex: "#1C2B2B"))
+    }
+}

@@ -7,17 +7,49 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		140994225D709BD8F842C6AD /* FilesTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91DF7CEB3935B064EB9F08C4 /* FilesTabView.swift */; };
+		1B316363CEAD65B04C2B7444 /* FilesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91E111A109AE89D53D83AF2 /* FilesViewModel.swift */; };
+		3F5297BE733FF60DA76A7F2E /* TranslationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EED09D59665F8EC8D3E838F /* TranslationManager.swift */; };
+		410619A7E15252E1D093A443 /* TranscriptDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFF9A55C2EF1C2E82845E4BB /* TranscriptDetailView.swift */; };
+		542BA0798965907613B0456D /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DA48EBDA584557E81CC698 /* User.swift */; };
+		601FA1B439BB229F49D24511 /* AudioRecordingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF654D674765CF9D6738BD7 /* AudioRecordingManager.swift */; };
+		616E1A7C5136B5D79D1900C2 /* LanguageSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10BA415C1F9EFBE8E733899A /* LanguageSelectorView.swift */; };
+		8F0A8DD183A68F42C11889BA /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D14D9BA73EB1371BE01830 /* AppEnvironment.swift */; };
+		9A32F2FE615B5635C9D2D536 /* TranscriptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6BE9F89DA38F5D619AEC79 /* TranscriptView.swift */; };
 		A10000001 /* ForgeIQApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000001 /* ForgeIQApp.swift */; };
 		A10000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000002 /* ContentView.swift */; };
 		A10000003 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A20000003 /* Assets.xcassets */; };
+		A1287D0B0D66C2CC26CEE62F /* Recording.swift in Sources */ = {isa = PBXBuildFile; fileRef = 633E8225A7C579D26A244EDD /* Recording.swift */; };
+		A1C64DD6D35D0ECC9CE71B91 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB687F0D13FB153666CAC978 /* HomeViewModel.swift */; };
+		C12F1B35EEF6D55D5686486A /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29098CC3AC565919EA9C061 /* Constants.swift */; };
+		CDC954BEF2DC6EE0764558DE /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5FEA49FE159A6506CE53D39 /* HomeView.swift */; };
+		E167E59B2EE02554BF19B62F /* Transcript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973B5F87FAFFF384275659BA /* Transcript.swift */; };
+		E7E19B52FE5CF946F0A13B43 /* WaveformView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A17F5E98BF86E078CB61309 /* WaveformView.swift */; };
+		EAE5DB752799252DB03C4676 /* SpeechTranscriptionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F93B3D3E4A230BF907D43D9 /* SpeechTranscriptionManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		A30000001 /* ForgeIQ.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ForgeIQ.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		A20000001 /* ForgeIQApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgeIQApp.swift; sourceTree = "<group>"; };
+		01D14D9BA73EB1371BE01830 /* AppEnvironment.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AppEnvironment.swift; path = App/AppEnvironment.swift; sourceTree = "<group>"; };
+		10BA415C1F9EFBE8E733899A /* LanguageSelectorView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LanguageSelectorView.swift; path = Shared/Components/LanguageSelectorView.swift; sourceTree = "<group>"; };
+		2F93B3D3E4A230BF907D43D9 /* SpeechTranscriptionManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SpeechTranscriptionManager.swift; path = Core/Speech/SpeechTranscriptionManager.swift; sourceTree = "<group>"; };
+		5EED09D59665F8EC8D3E838F /* TranslationManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TranslationManager.swift; path = Core/Translation/TranslationManager.swift; sourceTree = "<group>"; };
+		633E8225A7C579D26A244EDD /* Recording.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Recording.swift; path = Shared/Models/Recording.swift; sourceTree = "<group>"; };
+		63DA48EBDA584557E81CC698 /* User.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = User.swift; path = Shared/Models/User.swift; sourceTree = "<group>"; };
+		6A17F5E98BF86E078CB61309 /* WaveformView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = WaveformView.swift; path = Shared/Components/WaveformView.swift; sourceTree = "<group>"; };
+		91DF7CEB3935B064EB9F08C4 /* FilesTabView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FilesTabView.swift; path = Modules/VoiceCore/Views/FilesTabView.swift; sourceTree = "<group>"; };
+		973B5F87FAFFF384275659BA /* Transcript.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Transcript.swift; path = Shared/Models/Transcript.swift; sourceTree = "<group>"; };
+		A20000001 /* ForgeIQApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ForgeIQApp.swift; path = App/ForgeIQApp.swift; sourceTree = "<group>"; };
 		A20000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		A20000003 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A20000004 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A30000001 /* ForgeIQ.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ForgeIQ.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A91E111A109AE89D53D83AF2 /* FilesViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FilesViewModel.swift; path = Modules/VoiceCore/ViewModels/FilesViewModel.swift; sourceTree = "<group>"; };
+		AFF9A55C2EF1C2E82845E4BB /* TranscriptDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TranscriptDetailView.swift; path = Modules/VoiceCore/Views/TranscriptDetailView.swift; sourceTree = "<group>"; };
+		C29098CC3AC565919EA9C061 /* Constants.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Constants.swift; path = Shared/Constants.swift; sourceTree = "<group>"; };
+		EE6BE9F89DA38F5D619AEC79 /* TranscriptView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TranscriptView.swift; path = Modules/VoiceCore/Views/TranscriptView.swift; sourceTree = "<group>"; };
+		F5FEA49FE159A6506CE53D39 /* HomeView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HomeView.swift; path = Modules/VoiceCore/Views/HomeView.swift; sourceTree = "<group>"; };
+		FAF654D674765CF9D6738BD7 /* AudioRecordingManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AudioRecordingManager.swift; path = Core/Audio/AudioRecordingManager.swift; sourceTree = "<group>"; };
+		FB687F0D13FB153666CAC978 /* HomeViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HomeViewModel.swift; path = Modules/VoiceCore/ViewModels/HomeViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,6 +77,22 @@
 				A20000001 /* ForgeIQApp.swift */,
 				A20000002 /* ContentView.swift */,
 				A50000004 /* Resources */,
+				01D14D9BA73EB1371BE01830 /* AppEnvironment.swift */,
+				FAF654D674765CF9D6738BD7 /* AudioRecordingManager.swift */,
+				2F93B3D3E4A230BF907D43D9 /* SpeechTranscriptionManager.swift */,
+				5EED09D59665F8EC8D3E838F /* TranslationManager.swift */,
+				A91E111A109AE89D53D83AF2 /* FilesViewModel.swift */,
+				FB687F0D13FB153666CAC978 /* HomeViewModel.swift */,
+				91DF7CEB3935B064EB9F08C4 /* FilesTabView.swift */,
+				F5FEA49FE159A6506CE53D39 /* HomeView.swift */,
+				AFF9A55C2EF1C2E82845E4BB /* TranscriptDetailView.swift */,
+				EE6BE9F89DA38F5D619AEC79 /* TranscriptView.swift */,
+				10BA415C1F9EFBE8E733899A /* LanguageSelectorView.swift */,
+				6A17F5E98BF86E078CB61309 /* WaveformView.swift */,
+				C29098CC3AC565919EA9C061 /* Constants.swift */,
+				633E8225A7C579D26A244EDD /* Recording.swift */,
+				973B5F87FAFFF384275659BA /* Transcript.swift */,
+				63DA48EBDA584557E81CC698 /* User.swift */,
 			);
 			path = ForgeIQ;
 			sourceTree = "<group>";
@@ -137,6 +185,22 @@
 			files = (
 				A10000002 /* ContentView.swift in Sources */,
 				A10000001 /* ForgeIQApp.swift in Sources */,
+				8F0A8DD183A68F42C11889BA /* AppEnvironment.swift in Sources */,
+				601FA1B439BB229F49D24511 /* AudioRecordingManager.swift in Sources */,
+				EAE5DB752799252DB03C4676 /* SpeechTranscriptionManager.swift in Sources */,
+				3F5297BE733FF60DA76A7F2E /* TranslationManager.swift in Sources */,
+				1B316363CEAD65B04C2B7444 /* FilesViewModel.swift in Sources */,
+				A1C64DD6D35D0ECC9CE71B91 /* HomeViewModel.swift in Sources */,
+				140994225D709BD8F842C6AD /* FilesTabView.swift in Sources */,
+				CDC954BEF2DC6EE0764558DE /* HomeView.swift in Sources */,
+				410619A7E15252E1D093A443 /* TranscriptDetailView.swift in Sources */,
+				9A32F2FE615B5635C9D2D536 /* TranscriptView.swift in Sources */,
+				616E1A7C5136B5D79D1900C2 /* LanguageSelectorView.swift in Sources */,
+				E7E19B52FE5CF946F0A13B43 /* WaveformView.swift in Sources */,
+				C12F1B35EEF6D55D5686486A /* Constants.swift in Sources */,
+				A1287D0B0D66C2CC26CEE62F /* Recording.swift in Sources */,
+				E167E59B2EE02554BF19B62F /* Transcript.swift in Sources */,
+				542BA0798965907613B0456D /* User.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

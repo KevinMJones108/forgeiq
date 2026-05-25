@@ -35,5 +35,9 @@
     <array>
         <string>UIInterfaceOrientationPortrait</string>
     </array>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>ForgeIQ uses your microphone to record and transcribe conversations.</string>
+    <key>NSSpeechRecognitionUsageDescription</key>
+    <string>ForgeIQ transcribes your conversations to create searchable text files.</string>
 </dict>
 </plist>

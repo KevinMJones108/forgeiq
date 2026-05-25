@@ -216,10 +216,45 @@ router.get('/transcripts/:id', checkJwt, async (req, res, next) => {
 });
 
 // POST /api/v1/voice/tts
-// ElevenLabs proxy (stub for Session 4)
+// ElevenLabs TTS proxy - streams audio back to iOS
 router.post('/tts', checkJwt, async (req, res, next) => {
   try {
-    return res.status(501).json(error('TTS not implemented yet - Phase 1 Session 4'));
+    const { text, voice_id } = req.body;
+
+    if (!text || !voice_id) {
+      return res.status(400).json(error('text and voice_id required'));
+    }
+
+    if (!process.env.ELEVEN_LABS_API_KEY) {
+      return res.status(500).json(error('ElevenLabs API key not configured'));
+    }
+
+    // Call ElevenLabs API
+    const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voice_id}`, {
+      method: 'POST',
+      headers: {
+        'xi-api-key': process.env.ELEVEN_LABS_API_KEY,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        text,
+        model_id: 'eleven_multilingual_v2',
+        voice_settings: {
+          stability: 0.5,
+          similarity_boost: 0.75
+        }
+      })
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('ElevenLabs API error:', response.status, errorText);
+      return res.status(response.status).json(error('ElevenLabs API error'));
+    }
+
+    // Stream audio back to iOS
+    res.setHeader('Content-Type', 'audio/mpeg');
+    response.body.pipe(res);
   } catch (err) {
     next(err);
   }
