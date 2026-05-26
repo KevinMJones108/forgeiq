@@ -2,13 +2,14 @@
 //  TranslationManager.swift
 //  ForgeIQ
 //
-//  Session 5 — Apple Translation Framework (iOS 17.4+)
+//  Session 5 — Apple Translation Framework (iOS 18.0+)
 //  On-device translation using TranslationSession
 //
 
 import Foundation
 import Translation
 
+@available(iOS 18.0, *)
 @MainActor
 class TranslationManager: ObservableObject {
     @Published var isTranslating = false

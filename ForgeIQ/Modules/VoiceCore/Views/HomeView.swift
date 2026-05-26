@@ -305,62 +305,7 @@ struct HomeView: View {
     }
 }
 
-// MARK: - Placeholder Components
-
-struct LanguageSelectorView: View {
-    var body: some View {
-        HStack(spacing: 12) {
-            Text("Auto-detect")
-                .font(.system(size: 14))
-                .foregroundColor(.white.opacity(0.8))
-
-            Image(systemName: "arrow.right")
-                .font(.system(size: 12))
-                .foregroundColor(Constants.FORGEIQ_GREEN)
-
-            Text("English")
-                .font(.system(size: 14))
-                .foregroundColor(.white.opacity(0.8))
-
-            Spacer()
-
-            Button(action: {
-                // Swap languages
-            }) {
-                Image(systemName: "arrow.left.arrow.right")
-                    .font(.system(size: 14))
-                    .foregroundColor(Constants.FORGEIQ_GREEN)
-            }
-        }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
-        .background(Constants.FORGEIQ_FORGE.opacity(0.5))
-        .cornerRadius(8)
-        .frame(height: 48)
-    }
-}
-
-struct WaveformView: View {
-    let audioLevel: Float
-
-    var body: some View {
-        HStack(spacing: 4) {
-            ForEach(0..<12, id: \.self) { index in
-                RoundedRectangle(cornerRadius: 2)
-                    .fill(Constants.FORGEIQ_GREEN)
-                    .frame(width: 6, height: barHeight(for: index))
-            }
-        }
-    }
-
-    private func barHeight(for index: Int) -> CGFloat {
-        let normalizedLevel = CGFloat(max(0, min(1, audioLevel)))
-        let randomVariation = CGFloat.random(in: 0.6...1.0)
-        let baseHeight: CGFloat = 8
-        let maxHeight: CGFloat = 60
-        return baseHeight + (maxHeight - baseHeight) * normalizedLevel * randomVariation
-    }
-}
+// Placeholder components removed - now in separate files
 
 // MARK: - Preview
 

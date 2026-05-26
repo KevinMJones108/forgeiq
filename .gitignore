@@ -1,0 +1,25 @@
+# Environment / secrets
+.env
+.env.local
+.env.*.local
+**/.env
+**/.env.local
+
+# macOS
+.DS_Store
+
+# Xcode IDE state (per-user, never commit)
+*.xcuserstate
+**/xcuserdata/
+**/xcuserdata/**
+
+# Build
+build/
+DerivedData/
+*.xcworkspace/xcuserdata/
+
+# Node (subdir API)
+node_modules/
+
+# Logs
+*.log
