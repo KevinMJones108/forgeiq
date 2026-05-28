@@ -541,6 +541,46 @@ Low-score calls (score < 5 OR 2+ HIGH blown past signals):
 
 ---
 
+## Pre-Submission Gate (Mandatory — born from Vizion Scan 49-day delay)
+
+Run BEFORE every App Store submission. Each failure = 7 days lost minimum.
+Full rule: ~/.claude/rules/ios-submission-checklist.md
+
+### Gate 1: Paywall UI pattern
+```bash
+# Run from project root — must return ZERO results
+grep -r '\.alert(' ForgeIQ/ | grep -i 'paywall\|subscription\|purchase\|premium'
+# PASS: zero results
+# FAIL: any match → replace with .sheet() before submitting
+```
+- UIAlertController CANNOT render SwiftUI Link views
+- Apple 3.1.2(c) requires PP + EULA links in every paywall
+- ALWAYS `.sheet()`. NEVER `.alert()` for paywalls.
+
+### Gate 2: Subscription Settings section
+- Open Settings or Profile tab on device
+- Confirm "Manage Subscription" option is visible to free users
+- Tap it → must open Apple's subscription management (StoreKit link)
+- PASS: visible and functional in 1 tap
+- FAIL: missing or hidden → Apple 2.1(b) REJECT
+
+### Gate 3: Free tier smoke test
+- Sign in as a free user (fresh account)
+- Complete the primary ForgeIQ flow: record a call → get AI summary
+- MUST complete without hitting a paywall
+- Apple 2.1(b): free users must receive genuine value before paywall
+- PASS: free user completes core flow end-to-end
+- FAIL: paywall blocks core feature immediately → REJECT incoming
+
+### Pre-submission checklist
+- [ ] Gate 1: grep paywall alerts → zero results
+- [ ] Gate 2: Subscription management visible in Settings (manual test on device)
+- [ ] Gate 3: Free tier smoke test complete (record → summary, no paywall block)
+- [ ] All 3 PASS → submit
+- [ ] Any FAIL → fix first (saves 7 days minimum per fix)
+
+---
+
 ## KEVIN'S PREFERENCES
 
 - Dark FORGE background (#1C2B2B) on all primary screens
