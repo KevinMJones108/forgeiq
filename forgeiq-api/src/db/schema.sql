@@ -79,3 +79,21 @@ CREATE TABLE IF NOT EXISTS forge_scripts (
   user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+-- Products (Session 12 — Product Library)
+-- Sales reps upload product specs before calls
+-- AI references specs during conversation to help answer questions
+CREATE TABLE IF NOT EXISTS products (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  category TEXT,
+  specs JSONB NOT NULL DEFAULT '{}'::jsonb,
+  linked_script_id UUID REFERENCES forge_scripts(id) ON DELETE SET NULL,
+  deleted_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_products_user_id ON products(user_id);
+CREATE INDEX IF NOT EXISTS idx_products_script ON products(linked_script_id);
+CREATE INDEX IF NOT EXISTS idx_products_created_at ON products(created_at DESC);

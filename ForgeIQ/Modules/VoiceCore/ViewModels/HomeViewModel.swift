@@ -22,6 +22,10 @@ class HomeViewModel: ObservableObject {
     @Published var sourceLanguage: LanguageOption = .autoDetect
     @Published var targetLanguage: LanguageOption = .spanish
 
+    @Published var selectedScript: Script?
+    @Published var adherencePct: Int?
+
+
     // MARK: - Managers (injected from environment)
 
     private var audioManager: AudioRecordingManager?
