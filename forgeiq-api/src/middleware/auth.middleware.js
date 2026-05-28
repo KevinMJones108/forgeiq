@@ -11,6 +11,17 @@ const checkJwt = jwt({
   audience: process.env.AUTH0_AUDIENCE,
   issuer: `https://${process.env.AUTH0_DOMAIN}/`,
   algorithms: ['RS256']
-});
+}).unless({ path: ['/health'] });
 
-module.exports = { checkJwt };
+// Custom error handler for auth failures - MUST return 401 JSON, never 500
+function handleAuthError(err, req, res, next) {
+  if (err.name === 'UnauthorizedError') {
+    return res.status(401).json({
+      success: false,
+      error: 'Unauthorised'
+    });
+  }
+  next(err);
+}
+
+module.exports = { checkJwt, handleAuthError };

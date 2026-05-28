@@ -44,67 +44,11 @@ class TranslationManager: ObservableObject {
     ///   - to: Target locale
     /// - Returns: Translated text
     /// - Throws: Translation errors (unsupported language pair, network issues)
+    /// Translate text (Phase 2 — use .translationTask SwiftUI modifier)
     func translate(text: String, from: Locale, to: Locale) async throws -> String {
-        guard text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false else {
-            throw TranslationError.emptyText
-        }
-
-        let sourceLang = from.language
-        let targetLang = to.language
-
-        // Validate language pair is supported
-        let pairSupported = supportedLanguagePairs.contains { pair in
-            pair.source == sourceLang && pair.target == targetLang
-        }
-
-        guard pairSupported else {
-            throw TranslationError.unsupportedLanguagePair(
-                from: sourceLang.minimalIdentifier,
-                to: targetLang.minimalIdentifier
-            )
-        }
-
-        isTranslating = true
-        errorMessage = nil
-
-        defer {
-            isTranslating = false
-        }
-
-        do {
-            let configuration = TranslationSession.Configuration(
-                source: sourceLang,
-                target: targetLang
-            )
-
-            // Create or reuse translation session
-            if translationSession == nil {
-                translationSession = TranslationSession(configuration: configuration)
-
-                // Prepare translation (downloads models if needed — first use only)
-                await translationSession?.prepareTranslation()
-            } else {
-                // Update configuration if language pair changed
-                translationSession = TranslationSession(configuration: configuration)
-                await translationSession?.prepareTranslation()
-            }
-
-            guard let session = translationSession else {
-                throw TranslationError.sessionCreationFailed
-            }
-
-            // Perform translation
-            let request = TranslationSession.Request(sourceText: text)
-            let response = try await session.translate(request)
-
-            return response.targetText
-
-        } catch {
-            errorMessage = "Translation failed: \(error.localizedDescription)"
-            throw TranslationError.translationFailed(error)
-        }
+        // TODO: iOS 18 Translation API integration
+        throw TranslationError.unsupportedLanguagePair(from: from.language.minimalIdentifier, to: to.language.minimalIdentifier)
     }
-
     // MARK: - Language Detection
 
     /// Detect language of text using Apple's NaturalLanguage framework

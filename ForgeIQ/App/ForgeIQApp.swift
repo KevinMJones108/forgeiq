@@ -3,7 +3,7 @@
 //  ForgeIQ
 //
 //  Created by Kevin Jones via Claude Code
-//  Session 1 — Xcode project creation
+//  Session 6 — Main app entry with tab navigation
 //
 
 import SwiftUI
@@ -14,7 +14,7 @@ struct ForgeIQApp: App {
 
     var body: some Scene {
         WindowGroup {
-            HomeView()
+            MainTabView()
                 .environmentObject(appEnvironment)
         }
     }

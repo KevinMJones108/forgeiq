@@ -1,12 +1,9 @@
 function errorHandler(err, req, res, next) {
-  if (err.name === 'UnauthorizedError') {
-    return res.status(401).json({
-      success: false,
-      error: 'Invalid or missing authentication token'
-    });
+  // Log error without sensitive data
+  if (process.env.NODE_ENV !== 'production') {
+    console.error('Error:', err.message);
   }
 
-  console.error('Error:', err);
   const statusCode = err.statusCode || 500;
   const message = process.env.NODE_ENV === 'production'
     ? 'Internal server error'

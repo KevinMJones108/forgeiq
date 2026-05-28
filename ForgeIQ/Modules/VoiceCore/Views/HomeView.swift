@@ -29,7 +29,11 @@ struct HomeView: View {
 
                 // Language Selector (only visible in idle state)
                 if viewModel.recordingState == .idle {
-                    LanguageSelectorView()
+                    LanguageSelectorView(
+                        sourceLanguage: $viewModel.sourceLanguage,
+                        targetLanguage: $viewModel.targetLanguage,
+                        onSwap: { viewModel.swapLanguages() }
+                    )
                         .transition(.opacity)
                 }
 

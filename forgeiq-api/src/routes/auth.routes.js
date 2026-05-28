@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Pool } = require('pg');
+const { query } = require('../db');
 const { checkJwt } = require('../middleware/auth.middleware');
 const { success, error } = require('../utils/response');
 
@@ -17,7 +17,7 @@ router.post('/sync', checkJwt, async (req, res, next) => {
     const { email, name } = req.body;
 
     // Check if user exists
-    let userResult = await pool.query(
+    let userResult = await query(
       'SELECT id, email, name FROM users WHERE auth0_sub = $1',
       [auth0_sub]
     );
@@ -25,7 +25,7 @@ router.post('/sync', checkJwt, async (req, res, next) => {
     let user;
     if (userResult.rows.length === 0) {
       // Create new user
-      const insertUser = await pool.query(
+      const insertUser = await query(
         `INSERT INTO users (auth0_sub, email, name)
          VALUES ($1, $2, $3)
          RETURNING id, email, name, created_at`,
@@ -34,7 +34,7 @@ router.post('/sync', checkJwt, async (req, res, next) => {
       user = insertUser.rows[0];
 
       // Create default subscription (VoiceCore enabled)
-      await pool.query(
+      await query(
         `INSERT INTO user_subscriptions (user_id, voice_core_enabled)
          VALUES ($1, true)`,
         [user.id]
@@ -55,7 +55,7 @@ router.get('/me', checkJwt, async (req, res, next) => {
   try {
     const auth0_sub = req.auth.sub;
 
-    const result = await pool.query(
+    const result = await query(
       `SELECT
          u.id, u.email, u.name, u.created_at,
          s.voice_core_enabled, s.idea_vault_enabled, s.sigma_vault_enabled,

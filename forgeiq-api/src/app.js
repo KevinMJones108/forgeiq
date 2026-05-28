@@ -39,6 +39,10 @@ app.get('/health', (req, res) => {
 // API routes
 app.use('/api/v1', require('./routes'));
 
+// Auth error handler (must be before global error handler)
+const { handleAuthError } = require('./middleware/auth.middleware');
+app.use(handleAuthError);
+
 // 404 handler
 app.use((req, res) => {
   res.status(404).json({

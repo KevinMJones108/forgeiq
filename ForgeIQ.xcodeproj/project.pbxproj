@@ -17,6 +17,8 @@
 		8F0A8DD183A68F42C11889BA /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D14D9BA73EB1371BE01830 /* AppEnvironment.swift */; };
 		9A32F2FE615B5635C9D2D536 /* TranscriptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6BE9F89DA38F5D619AEC79 /* TranscriptView.swift */; };
 		A10000001 /* ForgeIQApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000001 /* ForgeIQApp.swift */; };
+		A10000005 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000005 /* MainTabView.swift */; };
+		A10000006 /* ProfileTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000006 /* ProfileTabView.swift */; };
 		A10000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000002 /* ContentView.swift */; };
 		A10000003 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A20000003 /* Assets.xcassets */; };
 		A1287D0B0D66C2CC26CEE62F /* Recording.swift in Sources */ = {isa = PBXBuildFile; fileRef = 633E8225A7C579D26A244EDD /* Recording.swift */; };
@@ -39,6 +41,8 @@
 		91DF7CEB3935B064EB9F08C4 /* FilesTabView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FilesTabView.swift; path = Modules/VoiceCore/Views/FilesTabView.swift; sourceTree = "<group>"; };
 		973B5F87FAFFF384275659BA /* Transcript.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Transcript.swift; path = Shared/Models/Transcript.swift; sourceTree = "<group>"; };
 		A20000001 /* ForgeIQApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ForgeIQApp.swift; path = App/ForgeIQApp.swift; sourceTree = "<group>"; };
+		A20000005 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MainTabView.swift; path = App/MainTabView.swift; sourceTree = "<group>"; };
+		A20000006 /* ProfileTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProfileTabView.swift; path = ForgeIQ/Modules/Admin/Views/ProfileTabView.swift; sourceTree = SOURCE_ROOT; };
 		A20000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		A20000003 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A20000004 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -75,6 +79,7 @@
 			isa = PBXGroup;
 			children = (
 				A20000001 /* ForgeIQApp.swift */,
+				A20000005 /* MainTabView.swift */,
 				A20000002 /* ContentView.swift */,
 				A50000004 /* Resources */,
 				01D14D9BA73EB1371BE01830 /* AppEnvironment.swift */,
@@ -185,6 +190,8 @@
 			files = (
 				A10000002 /* ContentView.swift in Sources */,
 				A10000001 /* ForgeIQApp.swift in Sources */,
+				A10000005 /* MainTabView.swift in Sources */,
+				A10000006 /* ProfileTabView.swift in Sources */,
 				8F0A8DD183A68F42C11889BA /* AppEnvironment.swift in Sources */,
 				601FA1B439BB229F49D24511 /* AudioRecordingManager.swift in Sources */,
 				EAE5DB752799252DB03C4676 /* SpeechTranscriptionManager.swift in Sources */,
@@ -259,7 +266,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -316,7 +323,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -343,7 +350,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -376,7 +383,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

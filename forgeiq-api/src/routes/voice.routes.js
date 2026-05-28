@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Pool } = require('pg');
+const { query } = require('../db');
 const { checkJwt } = require('../middleware/auth.middleware');
 const { success, error } = require('../utils/response');
 
@@ -11,7 +11,7 @@ const pool = new Pool({
 
 // Helper to get user_id from JWT
 async function getUserId(auth0_sub) {
-  const result = await pool.query('SELECT id FROM users WHERE auth0_sub = $1', [auth0_sub]);
+  const result = await query('SELECT id FROM users WHERE auth0_sub = $1', [auth0_sub]);
   if (result.rows.length === 0) throw new Error('User not found');
   return result.rows[0].id;
 }
@@ -25,7 +25,7 @@ router.get('/recordings', checkJwt, async (req, res, next) => {
     const limit = parseInt(req.query.limit) || 20;
     const offset = (page - 1) * limit;
 
-    const result = await pool.query(
+    const result = await query(
       `SELECT id, title, audio_duration_sec, created_at
        FROM recordings
        WHERE user_id = $1 AND deleted_at IS NULL
@@ -34,7 +34,7 @@ router.get('/recordings', checkJwt, async (req, res, next) => {
       [user_id, limit, offset]
     );
 
-    const countResult = await pool.query(
+    const countResult = await query(
       'SELECT COUNT(*) FROM recordings WHERE user_id = $1 AND deleted_at IS NULL',
       [user_id]
     );
@@ -61,7 +61,7 @@ router.post('/recordings', checkJwt, async (req, res, next) => {
       return res.status(400).json(error('title and audio_duration_sec required'));
     }
 
-    const result = await pool.query(
+    const result = await query(
       `INSERT INTO recordings (user_id, title, audio_duration_sec)
        VALUES ($1, $2, $3)
        RETURNING id, title, audio_duration_sec, created_at`,
@@ -81,7 +81,7 @@ router.get('/recordings/:id', checkJwt, async (req, res, next) => {
     const user_id = await getUserId(req.auth.sub);
     const { id } = req.params;
 
-    const result = await pool.query(
+    const result = await query(
       `SELECT
          r.id, r.title, r.audio_duration_sec, r.created_at,
          t.transcript_text, t.source_language, t.translated_text, t.target_language
@@ -113,7 +113,7 @@ router.put('/recordings/:id', checkJwt, async (req, res, next) => {
       return res.status(400).json(error('title required'));
     }
 
-    const result = await pool.query(
+    const result = await query(
       `UPDATE recordings
        SET title = $1
        WHERE id = $2 AND user_id = $3 AND deleted_at IS NULL
@@ -138,7 +138,7 @@ router.delete('/recordings/:id', checkJwt, async (req, res, next) => {
     const user_id = await getUserId(req.auth.sub);
     const { id } = req.params;
 
-    const result = await pool.query(
+    const result = await query(
       `UPDATE recordings
        SET deleted_at = NOW()
        WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL
@@ -168,7 +168,7 @@ router.post('/transcripts', checkJwt, async (req, res, next) => {
     }
 
     // Verify recording belongs to user
-    const recordingCheck = await pool.query(
+    const recordingCheck = await query(
       'SELECT id FROM recordings WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL',
       [recording_id, user_id]
     );
@@ -177,11 +177,11 @@ router.post('/transcripts', checkJwt, async (req, res, next) => {
       return res.status(404).json(error('Recording not found'));
     }
 
-    const result = await pool.query(
-      `INSERT INTO transcripts (recording_id, transcript_text, source_language, translated_text, target_language)
-       VALUES ($1, $2, $3, $4, $5)
+    const result = await query(
+      `INSERT INTO transcripts (recording_id, user_id, transcript_text, source_language, translated_text, target_language)
+       VALUES ($1, $2, $3, $4, $5, $6)
        RETURNING id, transcript_text, source_language, translated_text, target_language, created_at`,
-      [recording_id, transcript_text, source_language, translated_text, target_language]
+      [recording_id, user_id, transcript_text, source_language, translated_text, target_language]
     );
 
     return res.status(201).json(success({ transcript: result.rows[0] }));
@@ -197,7 +197,7 @@ router.get('/transcripts/:id', checkJwt, async (req, res, next) => {
     const user_id = await getUserId(req.auth.sub);
     const { id } = req.params;
 
-    const result = await pool.query(
+    const result = await query(
       `SELECT t.id, t.transcript_text, t.source_language, t.translated_text, t.target_language, t.created_at
        FROM transcripts t
        JOIN recordings r ON t.recording_id = r.id

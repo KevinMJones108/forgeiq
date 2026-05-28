@@ -2,7 +2,7 @@
 //  FilesViewModel.swift
 //  ForgeIQ
 //
-//  Session 7 — Files Module: ViewModel for FilesTabView
+//  Session 7 — Files Module: ViewModel for FilesTabView (reads .txt transcripts)
 //
 
 import Foundation
@@ -47,33 +47,37 @@ class FilesViewModel: ObservableObject {
         errorMessage = nil
 
         do {
-            let audioFiles = try fileManager.contentsOfDirectory(
+            // Find all .txt files in Documents directory
+            let txtFiles = try fileManager.contentsOfDirectory(
                 at: documentsDirectory,
-                includingPropertiesForKeys: [.creationDateKey, .fileSizeKey],
+                includingPropertiesForKeys: [.creationDateKey],
                 options: [.skipsHiddenFiles]
-            ).filter { $0.pathExtension == "m4a" }
+            ).filter { $0.pathExtension == "txt" }
 
-            recordings = audioFiles.compactMap { audioURL -> Recording? in
-                guard let attributes = try? fileManager.attributesOfItem(atPath: audioURL.path),
+            recordings = txtFiles.compactMap { txtURL -> Recording? in
+                guard let attributes = try? fileManager.attributesOfItem(atPath: txtURL.path),
                       let creationDate = attributes[.creationDate] as? Date else {
                     return nil
                 }
 
-                // Load transcript if exists
-                let transcriptFileName = audioURL.deletingPathExtension().lastPathComponent + ".txt"
-                let transcriptURL = documentsDirectory.appendingPathComponent(transcriptFileName)
-                let transcript = loadTranscript(from: transcriptURL)
+                // Parse transcript file
+                guard let content = try? String(contentsOf: txtURL, encoding: .utf8) else {
+                    return nil
+                }
 
-                // Derive duration from audio file metadata (placeholder — real impl in Session 8+)
-                let duration: TimeInterval = 0 // TODO: Extract from AVAsset in future session
+                let transcript = parseTranscript(from: content)
+                let metadata = parseMetadata(from: content)
+
+                // Derive title from filename (e.g., "2026-05-20_1432_We-keep-losing.txt")
+                let title = txtURL.deletingPathExtension().lastPathComponent
 
                 return Recording(
-                    id: UUID(uuidString: audioURL.deletingPathExtension().lastPathComponent) ?? UUID(),
-                    title: audioURL.deletingPathExtension().lastPathComponent,
-                    audioURL: audioURL,
-                    duration: duration,
+                    id: UUID(),
+                    title: title,
+                    audioURL: txtURL, // Reusing audioURL field for .txt path
+                    duration: metadata.duration,
                     createdAt: creationDate,
-                    language: "en", // TODO: Extract from transcript metadata
+                    language: metadata.language,
                     transcript: transcript
                 )
             }
@@ -87,14 +91,8 @@ class FilesViewModel: ObservableObject {
 
     func deleteRecording(_ recording: Recording) {
         do {
-            // Delete audio file
+            // Delete .txt file
             try fileManager.removeItem(at: recording.audioURL)
-
-            // Delete transcript file if exists
-            let transcriptURL = documentsDirectory.appendingPathComponent(recording.transcriptFileName)
-            if fileManager.fileExists(atPath: transcriptURL.path) {
-                try fileManager.removeItem(at: transcriptURL)
-            }
 
             // Remove from array
             recordings.removeAll { $0.id == recording.id }
@@ -104,66 +102,76 @@ class FilesViewModel: ObservableObject {
     }
 
     func shareRecording(_ recording: Recording) -> [Any] {
-        var itemsToShare: [Any] = [recording.audioURL]
-
-        let transcriptURL = documentsDirectory.appendingPathComponent(recording.transcriptFileName)
-        if fileManager.fileExists(atPath: transcriptURL.path) {
-            itemsToShare.append(transcriptURL)
-        }
-
-        return itemsToShare
+        return [recording.audioURL]
     }
 
     // MARK: - Private Methods
 
-    private func loadTranscript(from url: URL) -> Transcript? {
-        guard fileManager.fileExists(atPath: url.path),
-              let content = try? String(contentsOf: url, encoding: .utf8) else {
+    private func parseTranscript(from content: String) -> Transcript? {
+        let lines = content.components(separatedBy: .newlines)
+
+        // Find TRANSCRIPT section
+        guard let transcriptStart = lines.firstIndex(where: { $0 == "TRANSCRIPT" }) else {
             return nil
         }
 
-        // Parse transcript file format
-        let lines = content.components(separatedBy: .newlines)
-        guard lines.count > 5 else { return nil }
+        // Find next separator or TRANSLATION section
+        let transcriptEnd = lines[(transcriptStart + 1)...].firstIndex { line in
+            line.hasPrefix("──────") || line == "TRANSLATION"
+        } ?? lines.count
 
-        // Extract language
-        let languageLine = lines.first { $0.hasPrefix("Language:") } ?? ""
-        let language = languageLine.replacingOccurrences(of: "Language:", with: "").trimmingCharacters(in: .whitespaces)
-
-        // Extract original text (everything between Language line and --- separator)
-        let separatorIndex = lines.firstIndex { $0.hasPrefix("---") }
-        let textStartIndex = lines.firstIndex { $0.hasPrefix("Language:") }.map { $0 + 2 } ?? 5
-        let textEndIndex = separatorIndex ?? lines.count
-        let originalText = lines[textStartIndex..<textEndIndex]
+        let originalText = lines[(transcriptStart + 2)..<transcriptEnd]
             .joined(separator: "\n")
             .trimmingCharacters(in: .whitespacesAndNewlines)
 
-        // Extract translation if exists
+        // Parse translation if exists
         var translatedText: String?
-        var targetLanguage: String?
-        if let separatorIdx = separatorIndex, separatorIdx + 2 < lines.count {
-            let translationHeaderLine = lines[separatorIdx + 1]
-            if translationHeaderLine.hasPrefix("Translation") {
-                // Extract target language from "Translation (es):"
-                let pattern = #"Translation \(([a-z]{2})\):"#
-                if let regex = try? NSRegularExpression(pattern: pattern),
-                   let match = regex.firstMatch(in: translationHeaderLine, range: NSRange(translationHeaderLine.startIndex..., in: translationHeaderLine)),
-                   let range = Range(match.range(at: 1), in: translationHeaderLine) {
-                    targetLanguage = String(translationHeaderLine[range])
-                }
-
-                translatedText = lines[(separatorIdx + 2)...]
-                    .joined(separator: "\n")
-                    .trimmingCharacters(in: .whitespacesAndNewlines)
-            }
+        if let translationStart = lines.firstIndex(where: { $0 == "TRANSLATION" }) {
+            let translationContent = lines[(translationStart + 2)...]
+                .joined(separator: "\n")
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+            translatedText = translationContent.isEmpty ? nil : translationContent
         }
+
+        // Extract language from header
+        let languageLine = lines.first { $0.hasPrefix("Language:") } ?? ""
+        let languageParts = languageLine.replacingOccurrences(of: "Language:", with: "")
+            .trimmingCharacters(in: .whitespaces)
+            .components(separatedBy: " → ")
 
         return Transcript(
             originalText: originalText,
-            originalLanguage: language,
+            originalLanguage: languageParts.first ?? "Unknown",
             translatedText: translatedText,
-            targetLanguage: targetLanguage,
+            targetLanguage: languageParts.last,
             confidence: 1.0
         )
+    }
+
+    private func parseMetadata(from content: String) -> (duration: TimeInterval, language: String, wordCount: Int) {
+        let lines = content.components(separatedBy: .newlines)
+
+        // Extract duration (MM:SS format)
+        let durationLine = lines.first { $0.hasPrefix("Duration:") } ?? ""
+        let durationString = durationLine.replacingOccurrences(of: "Duration:", with: "")
+            .trimmingCharacters(in: .whitespaces)
+        let durationParts = durationString.components(separatedBy: ":")
+        let minutes = Double(durationParts.first ?? "0") ?? 0
+        let seconds = Double(durationParts.last ?? "0") ?? 0
+        let duration = (minutes * 60) + seconds
+
+        // Extract language
+        let languageLine = lines.first { $0.hasPrefix("Language:") } ?? ""
+        let language = languageLine.replacingOccurrences(of: "Language:", with: "")
+            .trimmingCharacters(in: .whitespaces)
+
+        // Extract word count
+        let wordCountLine = lines.first { $0.hasPrefix("Word Count:") } ?? ""
+        let wordCountString = wordCountLine.replacingOccurrences(of: "Word Count:", with: "")
+            .replacingOccurrences(of: "words", with: "")
+            .trimmingCharacters(in: .whitespaces)
+        let wordCount = Int(wordCountString) ?? 0
+
+        return (duration, language, wordCount)
     }
 }

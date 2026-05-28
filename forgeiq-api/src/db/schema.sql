@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS users (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   auth0_sub TEXT UNIQUE NOT NULL,
   email TEXT NOT NULL,
-  full_name TEXT,
+  name TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -18,12 +18,12 @@ CREATE TABLE IF NOT EXISTS user_subscriptions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   tier TEXT NOT NULL DEFAULT 'free',
-  feature_voice_core BOOLEAN DEFAULT true,
-  feature_idea_vault BOOLEAN DEFAULT false,
-  feature_sigma_vault BOOLEAN DEFAULT false,
-  feature_sales_forge BOOLEAN DEFAULT false,
-  feature_doe_optimiser BOOLEAN DEFAULT false,
-  feature_apex_script BOOLEAN DEFAULT false,
+  voice_core_enabled BOOLEAN DEFAULT true,
+  idea_vault_enabled BOOLEAN DEFAULT false,
+  sigma_vault_enabled BOOLEAN DEFAULT false,
+  sales_forge_enabled BOOLEAN DEFAULT false,
+  doe_enabled BOOLEAN DEFAULT false,
+  apex_script_enabled BOOLEAN DEFAULT false,
   stripe_customer_id TEXT,
   stripe_subscription_id TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -36,10 +36,11 @@ CREATE TABLE IF NOT EXISTS recordings (
   user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   title TEXT NOT NULL,
   audio_file_path TEXT,
-  duration_sec INTEGER,
+  audio_duration_sec INTEGER,
   language_from TEXT,
   language_to TEXT,
   mode TEXT DEFAULT 'record_only',
+  deleted_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 CREATE INDEX IF NOT EXISTS idx_recordings_user_id ON recordings(user_id);
@@ -50,8 +51,10 @@ CREATE TABLE IF NOT EXISTS transcripts (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   recording_id UUID NOT NULL REFERENCES recordings(id) ON DELETE CASCADE,
   user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  content TEXT NOT NULL,
-  content_translated TEXT,
+  transcript_text TEXT NOT NULL,
+  source_language TEXT,
+  translated_text TEXT,
+  target_language TEXT,
   word_count INTEGER,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
