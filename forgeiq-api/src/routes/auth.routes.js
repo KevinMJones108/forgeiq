@@ -4,10 +4,6 @@ const { query } = require('../db');
 const { checkJwt } = require('../middleware/auth.middleware');
 const { success, error } = require('../utils/response');
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
-});
 
 // POST /api/v1/auth/sync
 // First login - create user + subscription if new

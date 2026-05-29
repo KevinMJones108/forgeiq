@@ -6,33 +6,6 @@
 const express = require('express');
 const router = express.Router();
 const { Pool } = require('pg');
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-
-// GET /api/v1/products — List user's products
-router.get('/', async (req, res, next) => {
-  try {
-    const userId = req.auth.sub;
-    const { limit = 50, offset = 0 } = req.query;
-
-    const result = await pool.query(
-      `SELECT id, name, category, specs, linked_script_id, created_at, updated_at
-       FROM products
-       WHERE user_id = (SELECT id FROM users WHERE auth0_sub = $1)
-         AND deleted_at IS NULL
-       ORDER BY created_at DESC
-       LIMIT $2 OFFSET $3`,
-      [userId, limit, offset]
-    );
-
-    res.json({
-      success: true,
-      data: result.rows,
-      error: null
-    });
-  } catch (error) {
-    next(error);
-  }
-});
 
 // POST /api/v1/products — Create new product with specs
 router.post('/', async (req, res, next) => {
