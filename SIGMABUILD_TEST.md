@@ -297,8 +297,98 @@ ForgeIQ requires 4 Kevin-gated manual steps (Render deploy auth, Auth0 free tena
 | 2026-05-26 | L0 Code | P10 | 1.5σ | BLOCKED | Backend HTTP 404; no Xcode test target |
 | 2026-05-26 | L0 Re-verify (Session 3) | P10 | 1.5σ | BLOCKED | Confirmed unchanged — CS-005 baseline locked |
 
-**Last Updated:** 2026-05-26 (Session 3 — CS-005 case study locked)
-**Next Review:** After Kevin's 30-min manual batch (Render + Auth0 + Xcode + iPhone) → expected L0 → 3.0σ jump
+**Last Updated:** 2026-06-01 (Session 5 — L1 re-test post ai.routes.js build)
+**Next Review:** After Kevin adds .swift files to Xcode + builds for device → expected 3.5σ
+
+---
+
+# SESSION 5 — L1 AI RE-TEST — 2026-06-01
+
+**Test Type:** L1 AI Functional (P10 Sales Associate primary workflow simulation)
+**Persona:** P10 Sales Associate (Owen — EPDirectory outbound)
+**Tester:** Claude Code (SigmaBuild methodology, ~/qbo/sigmabuild/CLAUDE.md)
+**Context:** Backend deployed (forgeiq-974q.onrender.com), ai.routes.js built, Swift files on disk
+
+## BASELINE SIGMA — 2.5σ (CONDITIONAL)
+
+**Pass Rate:** 6/10 primary tests CODE_COMPLETE (60%)
+**Critical Failure Rate:** 40% (4/10 steps device-untested or unverified)
+**DPMO:** 400,000
+**Release Gate:** CONDITIONAL — BLOCKED for P10 device use, PASS for L1 code audit only
+
+## FMEA FINDINGS (RPN > 70)
+
+| # | Finding | Sev | Occ | Det | RPN | Status | Fix |
+|---|---------|-----|-----|-----|-----|--------|-----|
+| F01 | iOS code NOT ADDED to Xcode project | 9 | 10 | 2 | **180** | BLOCKER | Kevin adds .swift files to Xcode (5 min) |
+| F02 | Device-specific features (mic, STT, TTS) UNTESTED | 10 | 10 | 1 | **100** | BLOCKER | Kevin builds for iPhone + test call (10 min) |
+| F03 | Script Library / Product Library MISSING (Phase 6) | 9 | 10 | 1 | **90** | HIGH_GAP | Accept OR accelerate Phase 6 (3-5 sessions) |
+| F04 | Pipedrive auto-log NOT VERIFIED in code | 8 | 10 | 1 | **80** | RECOMMENDED | Verify pipedriveService.js exists + called |
+| F05 | Zero Swift unit/UI test coverage | 7 | 10 | 1 | **70** | RECOMMENDED | Create ForgeIQTests target (1 session) |
+
+**Total critical (RPN >100):** 2 findings (F01, F02)  
+**High (RPN 80-100):** 2 findings (F03, F04)  
+**Medium (RPN 50-79):** 1 finding (F05)
+
+## PRIMARY FLOW BREAKDOWN (P10 — 10 steps)
+
+| # | Step | Code State | RPN | Status |
+|---|------|-----------|-----|--------|
+| 1 | Auth0 login | CODE_COMPLETE | 0 | ✅ Constants.swift has Auth0 config |
+| 2 | Tap Record (HomeView) | CODE_COMPLETE | 0 | ✅ HomeView.swift exists |
+| 3 | Microphone capture (AVFoundation) | DEVICE_UNTESTED | 100 | ⚠️ AudioRecordingManager.swift built, Simulator cannot test |
+| 4 | Real-time STT (Apple Speech) | DEVICE_UNTESTED | 100 | ⚠️ SpeechTranscriptionManager.swift built, Simulator cannot test |
+| 5 | Auto-save .txt (TranscriptDetailView) | CODE_COMPLETE | 0 | ✅ TranscriptDetailView.swift exists |
+| 6 | Transcript sync to backend | CODE_COMPLETE | 0 | ✅ Backend responding at forgeiq-974q.onrender.com |
+| 7 | AI Call Summary (Claude API) | CODE_COMPLETE | 0 | ✅ ai.routes.js has /call-summary endpoint |
+| 8 | Blown Past detector | NEEDS_VERIFICATION | 80 | ⚠️ May be in call-summary response (not explicit endpoint) |
+| 9 | Pipedrive auto-log | NEEDS_VERIFICATION | 80 | ⚠️ May be in voice.routes.js (not verified) |
+| 10 | Review summary (FilesTabView) | CODE_COMPLETE | 0 | ✅ FilesTabView.swift exists |
+
+**CODE_COMPLETE:** 6/10 (60%)  
+**DEVICE_UNTESTED:** 2/10 (20%)  
+**NEEDS_VERIFICATION:** 2/10 (20%)
+
+## TOP 3 FIX PRIORITIES
+
+1. **F01 [RPN 180]:** iOS code NOT ADDED to Xcode project. **Fix:** Kevin adds 20+ .swift files to ForgeIQ.xcodeproj (5 min manual step).
+
+2. **F02 [RPN 100]:** Device-specific features (mic, STT, TTS) UNTESTED. **Fix:** Kevin builds for iPhone + runs 1 test recording (10 min).
+
+3. **F03 [RPN 90]:** Script Library / Product Library MISSING (Phase 6 features). **Fix:** Accept as Phase 1 limitation OR pivot primary persona to P00 Kevin (internal testing).
+
+## COMPARISON TO PRIOR BASELINES
+
+| Session | Date | Sigma | Gate | Notes |
+|---------|------|-------|------|-------|
+| 1 | 2026-05-25 | 1.5σ | BLOCKED | Phase 1 code complete, deployment pending |
+| 2 | 2026-05-26 | 1.5σ | BLOCKED | Backend HTTP 404; no Xcode test target |
+| 3 | 2026-05-26 | 1.5σ | BLOCKED | Confirmed unchanged — CS-005 baseline locked |
+| 4 | 2026-05-28 | 2.0σ | CONDITIONAL | Script Library absent blocks P10 use case |
+| 4b | 2026-05-28 | 3.0σ | CONDITIONAL | Backend only (manual smoke test) |
+| **5** | **2026-06-01** | **2.5σ** | **CONDITIONAL** | ai.routes.js built + backend verified; Xcode project pending |
+
+**Delta:** +0.5σ improvement from Session 4 due to ai.routes.js build + backend deployment verified
+
+## RECOMMENDATIONS
+
+### Option A: Accept Phase 1 Scope (RECOMMENDED)
+- **Primary Persona:** P00 Kevin (internal testing — record sessions, transcribe, get AI summary)
+- **Sigma Level (P00):** Estimated 4.0σ after device test (recording + summary work well for Kevin's use case)
+- **Release Gate:** PASS for internal Kevin testing, HOLD for Owen sales use
+- **Next Step:** Kevin adds .swift files to Xcode + builds for device → re-run L1 → expected 3.5σ+
+
+### Option B: Accelerate Phase 6 Features
+- **Impact:** Requires building Script Library + Product Library before Owen can test
+- **Effort:** High — 3-5 sessions + backend schema changes
+- **Timeline:** 1-2 weeks
+- **Risk:** Delays internal Kevin testing while building features Kevin may not need yet
+
+### Option C: Hybrid — Minimal Coaching in Phase 1
+- **Impact:** Add a simple "Script Viewer" (read-only, no upload) to Phase 1
+- **Effort:** Medium — 1 session to add ScriptViewerView + hardcoded sample script
+- **Benefit:** Owen can test coaching guidance with 1-2 hardcoded scripts before Phase 6
+- **Sigma Impact:** Estimated lift to 3.2σ (minimum viable for P10)
 
 ---
 

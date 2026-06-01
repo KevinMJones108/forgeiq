@@ -85,7 +85,7 @@ struct TranscriptView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
             .background(Color(hex: "#1C2B2B")) // FORGE dark
-            .onChange(of: transcriptionManager.transcriptText) { _ in
+            .onChange(of: transcriptionManager.transcriptText) {
                 // Auto-scroll to bottom when new text arrives
                 withAnimation {
                     proxy.scrollTo("cursor", anchor: .bottom)

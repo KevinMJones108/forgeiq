@@ -24,8 +24,9 @@ DB_RESPONSE=$(curl -s -X POST \
   -d "{
     \"ownerId\": \"$OWNER_ID\",
     \"name\": \"forgeiq-db\",
-    \"plan\": \"starter\",
+    \"plan\": \"free\",
     \"region\": \"oregon\",
+    \"version\": \"15\",
     \"databaseName\": \"forgeiq\",
     \"databaseUser\": \"forgeiq\"
   }")
