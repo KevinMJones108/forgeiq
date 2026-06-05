@@ -161,6 +161,25 @@ struct TranscriptDetailView: View {
 
     private var actionButtons: some View {
         VStack(spacing: 12) {
+            // Sales Intel — objection / blew-past analysis
+            if let transcriptText = recording.transcript?.originalText,
+               !transcriptText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                NavigationLink {
+                    CallAnalysisView(transcript: transcriptText)
+                } label: {
+                    HStack {
+                        Image(systemName: "sparkles")
+                        Text("Analyze Call (Sales Intel)")
+                    }
+                    .font(.headline)
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Constants.FORGEIQ_GREEN)
+                    .cornerRadius(12)
+                }
+            }
+
             // Share transcript (.txt)
             Button {
                 shareRecording()
@@ -173,7 +192,7 @@ struct TranscriptDetailView: View {
                 .foregroundColor(.white)
                 .frame(maxWidth: .infinity)
                 .padding()
-                .background(Constants.FORGEIQ_GREEN)
+                .background(Color.black.opacity(0.3))
                 .cornerRadius(12)
             }
         }

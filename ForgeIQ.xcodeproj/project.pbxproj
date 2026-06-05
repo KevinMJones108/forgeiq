@@ -30,6 +30,11 @@
 		E7E19B52FE5CF946F0A13B43 /* WaveformView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A17F5E98BF86E078CB61309 /* WaveformView.swift */; };
 		EAE5DB752799252DB03C4676 /* SpeechTranscriptionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F93B3D3E4A230BF907D43D9 /* SpeechTranscriptionManager.swift */; };
 		FC5B3A3479051C92B9D31928 /* Script.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F452BF3370F325CC5F38417 /* Script.swift */; };
+		B10000001 /* AuthTokenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000001 /* AuthTokenManager.swift */; };
+		B10000002 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000002 /* APIClient.swift */; };
+		B10000003 /* CallAnalysis.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000003 /* CallAnalysis.swift */; };
+		B10000004 /* CallAnalysisViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000004 /* CallAnalysisViewModel.swift */; };
+		B10000005 /* CallAnalysisView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000005 /* CallAnalysisView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -58,6 +63,11 @@
 		F5FEA49FE159A6506CE53D39 /* HomeView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HomeView.swift; path = Modules/VoiceCore/Views/HomeView.swift; sourceTree = "<group>"; };
 		FAF654D674765CF9D6738BD7 /* AudioRecordingManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AudioRecordingManager.swift; path = Core/Audio/AudioRecordingManager.swift; sourceTree = "<group>"; };
 		FB687F0D13FB153666CAC978 /* HomeViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HomeViewModel.swift; path = Modules/VoiceCore/ViewModels/HomeViewModel.swift; sourceTree = "<group>"; };
+		B20000001 /* AuthTokenManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AuthTokenManager.swift; path = Core/API/AuthTokenManager.swift; sourceTree = "<group>"; };
+		B20000002 /* APIClient.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = APIClient.swift; path = Core/API/APIClient.swift; sourceTree = "<group>"; };
+		B20000003 /* CallAnalysis.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CallAnalysis.swift; path = Shared/Models/CallAnalysis.swift; sourceTree = "<group>"; };
+		B20000004 /* CallAnalysisViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CallAnalysisViewModel.swift; path = Modules/VoiceCore/ViewModels/CallAnalysisViewModel.swift; sourceTree = "<group>"; };
+		B20000005 /* CallAnalysisView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CallAnalysisView.swift; path = Modules/VoiceCore/Views/CallAnalysisView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +112,11 @@
 				633E8225A7C579D26A244EDD /* Recording.swift */,
 				973B5F87FAFFF384275659BA /* Transcript.swift */,
 				63DA48EBDA584557E81CC698 /* User.swift */,
+				B20000001 /* AuthTokenManager.swift */,
+				B20000002 /* APIClient.swift */,
+				B20000003 /* CallAnalysis.swift */,
+				B20000004 /* CallAnalysisViewModel.swift */,
+				B20000005 /* CallAnalysisView.swift */,
 				A7338E17DD902B3F42F29833 /* Shared */,
 			);
 			path = ForgeIQ;
@@ -232,6 +247,11 @@
 				542BA0798965907613B0456D /* User.swift in Sources */,
 				FC5B3A3479051C92B9D31928 /* Script.swift in Sources */,
 				2396FF20CBC1622EB4F66F93 /* Product.swift in Sources */,
+				B10000001 /* AuthTokenManager.swift in Sources */,
+				B10000002 /* APIClient.swift in Sources */,
+				B10000003 /* CallAnalysis.swift in Sources */,
+				B10000004 /* CallAnalysisViewModel.swift in Sources */,
+				B10000005 /* CallAnalysisView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
