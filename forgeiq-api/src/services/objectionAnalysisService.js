@@ -11,7 +11,11 @@
 const Anthropic = require('@anthropic-ai/sdk');
 
 // Cost/quality balance for post-call analysis.
-const MODEL = 'claude-sonnet-4-6';
+// Default to Haiku 4.5 (the dated id proven working in customercall's prod Anthropic
+// integration + ~10x cheaper than Sonnet — pennies/analysis). The bare 'claude-sonnet-4-6'
+// alias did NOT resolve on the API and caused 502 "upstream" failures. Override with
+// ANALYSIS_MODEL env var (use a valid dated id) if deeper analysis is ever needed.
+const MODEL = process.env.ANALYSIS_MODEL || 'claude-haiku-4-5-20251001';
 const MAX_TOKENS = 3072;
 
 let client = null;
