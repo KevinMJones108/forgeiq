@@ -6,23 +6,16 @@
 //
 
 import SwiftUI
-import AVFoundation
 
 struct TranscriptDetailView: View {
     let recording: Recording
 
     @Environment(\.dismiss) private var dismiss
-    @State private var isPlayingTTS = false
-    @State private var showingLanguageSelection = false
     @State private var showingShareSheet = false
     @State private var itemsToShare: [Any] = []
     @State private var errorMessage: String?
-    @State private var audioPlayer: AVPlayer?
 
     private let fileManager = FileManager.default
-    private var documentsDirectory: URL {
-        fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
-    }
 
     var body: some View {
         ZStack {
@@ -168,35 +161,13 @@ struct TranscriptDetailView: View {
 
     private var actionButtons: some View {
         VStack(spacing: 12) {
-            // Play Original Audio
+            // Share transcript (.txt)
             Button {
-                playAudioRecording()
+                shareRecording()
             } label: {
                 HStack {
-                    Image(systemName: "play.circle.fill")
-                    Text("Play Original Recording")
-                }
-                .font(.headline)
-                .foregroundColor(.white)
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(Constants.FORGEIQ_NAVY)
-                .cornerRadius(12)
-            }
-
-            // ElevenLabs Read-Back
-            Button {
-                readTranscriptWithElevenLabs()
-            } label: {
-                HStack {
-                    if isPlayingTTS {
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                        Text("Generating audio...")
-                    } else {
-                        Image(systemName: "speaker.wave.3.fill")
-                        Text("Read Transcript (ElevenLabs)")
-                    }
+                    Image(systemName: "square.and.arrow.up")
+                    Text("Share Transcript")
                 }
                 .font(.headline)
                 .foregroundColor(.white)
@@ -205,73 +176,23 @@ struct TranscriptDetailView: View {
                 .background(Constants.FORGEIQ_GREEN)
                 .cornerRadius(12)
             }
-            .disabled(isPlayingTTS || recording.transcript == nil)
         }
     }
 
     // MARK: - Private Methods
 
-    private func playAudioRecording() {
-        audioPlayer = AVPlayer(url: recording.audioURL)
-        audioPlayer?.play()
-    }
-
-    private func readTranscriptWithElevenLabs() {
-        guard let transcript = recording.transcript else {
-            errorMessage = "No transcript available"
+    private func shareRecording() {
+        // recording.audioURL holds the saved .txt transcript path (set by FilesViewModel).
+        var items: [Any] = []
+        if fileManager.fileExists(atPath: recording.audioURL.path) {
+            items.append(recording.audioURL)
+        } else if let text = recording.transcript?.displayText {
+            items.append(text)
+        }
+        guard !items.isEmpty else {
+            errorMessage = "Nothing to share"
             return
         }
-
-        isPlayingTTS = true
-        errorMessage = nil
-
-        Task {
-            do {
-                // Call backend TTS endpoint
-                let url = URL(string: "\(Constants.API_BASE_URL)/api/v1/voice/tts")!
-                var request = URLRequest(url: url)
-                request.httpMethod = "POST"
-                request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-                // TODO: Add JWT token header in Session 10 (Auth0)
-
-                let body: [String: Any] = [
-                    "text": transcript.displayText,
-                    "voice_id": "default" // TODO: Allow user to select voice
-                ]
-                request.httpBody = try JSONSerialization.data(withJSONObject: body)
-
-                let (data, response) = try await URLSession.shared.data(for: request)
-
-                guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-                    throw NSError(domain: "ElevenLabs", code: -1, userInfo: [NSLocalizedDescriptionKey: "TTS request failed"])
-                }
-
-                // Save audio to temp file and play
-                let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("tts_\(UUID().uuidString).mp3")
-                try data.write(to: tempURL)
-
-                await MainActor.run {
-                    audioPlayer = AVPlayer(url: tempURL)
-                    audioPlayer?.play()
-                    isPlayingTTS = false
-                }
-            } catch {
-                await MainActor.run {
-                    errorMessage = "ElevenLabs TTS failed: \(error.localizedDescription)"
-                    isPlayingTTS = false
-                }
-            }
-        }
-    }
-
-    private func shareRecording() {
-        var items: [Any] = [recording.audioURL]
-
-        let transcriptURL = documentsDirectory.appendingPathComponent(recording.transcriptFileName)
-        if fileManager.fileExists(atPath: transcriptURL.path) {
-            items.append(transcriptURL)
-        }
-
         itemsToShare = items
         showingShareSheet = true
     }

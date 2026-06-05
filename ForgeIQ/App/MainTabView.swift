@@ -16,7 +16,6 @@ struct MainTabView: View {
             HomeView()
                 .environmentObject(appEnvironment.audioManager)
                 .environmentObject(appEnvironment.speechManager)
-                .environmentObject(appEnvironment.translationManager)
                 .tabItem {
                     Label("Record", systemImage: "mic.fill")
                 }
@@ -27,10 +26,10 @@ struct MainTabView: View {
                     Label("Files", systemImage: "doc.text.fill")
                 }
 
-            // Profile Tab — User settings
+            // About Tab — App info (functional; Profile/account deferred to a later phase)
             ProfileTabView()
                 .tabItem {
-                    Label("Profile", systemImage: "person.fill")
+                    Label("About", systemImage: "info.circle.fill")
                 }
         }
         .accentColor(Constants.FORGEIQ_GREEN)

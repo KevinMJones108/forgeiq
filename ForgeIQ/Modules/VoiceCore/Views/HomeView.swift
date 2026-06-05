@@ -14,7 +14,8 @@ struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel()
     @EnvironmentObject var audioManager: AudioRecordingManager
     @EnvironmentObject var speechManager: SpeechTranscriptionManager
-    @EnvironmentObject var translationManager: TranslationManager
+
+    @State private var showingShareSheet = false
 
     // MARK: - Body
 
@@ -27,23 +28,10 @@ struct HomeView: View {
             VStack(spacing: 40) {
                 Spacer()
 
-                // Language Selector (only visible in idle state)
-                if viewModel.recordingState == .idle {
-                    LanguageSelectorView(
-                        sourceLanguage: $viewModel.sourceLanguage,
-                        targetLanguage: $viewModel.targetLanguage,
-                        onSwap: { viewModel.swapLanguages() }
-                    )
-                        .transition(.opacity)
-                }
-
                 // Main Button
                 mainButton
                     .onTapGesture {
                         viewModel.handleButtonTap()
-                    }
-                    .onLongPressGesture(minimumDuration: 0.5) {
-                        viewModel.handleLongPress()
                     }
 
                 // Waveform (only visible during recording)
@@ -77,16 +65,15 @@ struct HomeView: View {
             }
             .padding()
         }
-        .sheet(isPresented: $viewModel.showModeSheet) {
-            modeSelector
-                .presentationDetents([.fraction(0.35)])
-                .presentationDragIndicator(.visible)
+        .sheet(isPresented: $showingShareSheet) {
+            if let url = viewModel.savedTranscriptURL {
+                ActivityViewController(activityItems: [url])
+            }
         }
         .onAppear {
             viewModel.setup(
                 audioManager: audioManager,
-                speechManager: speechManager,
-                translationManager: translationManager
+                speechManager: speechManager
             )
         }
         .animation(.spring(response: 0.4, dampingFraction: 0.7), value: viewModel.recordingState)
@@ -215,88 +202,33 @@ struct HomeView: View {
             .background(Constants.FORGEIQ_FORGE.opacity(0.5))
             .cornerRadius(12)
 
-            if let translatedText = viewModel.translatedText {
-                Divider()
-                    .background(Constants.FORGEIQ_GREEN)
-                    .padding(.vertical, 8)
-
-                Text("Translation")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundColor(Constants.FORGEIQ_GREEN)
-
-                ScrollView {
-                    Text(translatedText)
-                        .font(.system(size: 14))
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                .frame(maxHeight: 200)
-                .padding()
-                .background(Constants.FORGEIQ_FORGE.opacity(0.5))
-                .cornerRadius(12)
-            }
-
+            // Share saved transcript (.txt)
             Button(action: {
-                // Save action will be implemented in Session 7
+                if viewModel.savedTranscriptURL != nil {
+                    showingShareSheet = true
+                }
             }) {
-                Text("Saved to Files")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 12)
-                    .background(Constants.FORGEIQ_GREEN)
-                    .cornerRadius(8)
+                HStack {
+                    Image(systemName: "square.and.arrow.up")
+                    Text("Share Transcript")
+                }
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 12)
+                .background(Constants.FORGEIQ_GREEN)
+                .cornerRadius(8)
             }
+            .disabled(viewModel.savedTranscriptURL == nil)
+            .opacity(viewModel.savedTranscriptURL == nil ? 0.5 : 1.0)
+
+            // Saved confirmation + start over
+            Text("Saved to Files")
+                .font(.system(size: 12))
+                .foregroundColor(Constants.FORGEIQ_MID_GREY)
+                .frame(maxWidth: .infinity, alignment: .center)
         }
         .padding(.horizontal)
-    }
-
-    // MARK: - Mode Selector Sheet
-
-    private var modeSelector: some View {
-        VStack(spacing: 0) {
-            Text("Recording Mode")
-                .font(.system(size: 18, weight: .semibold))
-                .foregroundColor(.white)
-                .padding(.top, 20)
-                .padding(.bottom, 16)
-
-            ForEach(HomeViewModel.RecordingMode.allCases, id: \.self) { mode in
-                Button(action: {
-                    viewModel.selectedMode = mode
-                    viewModel.showModeSheet = false
-                }) {
-                    HStack {
-                        Text(mode.rawValue)
-                            .font(.system(size: 16, weight: .medium))
-                            .foregroundColor(.white)
-
-                        Spacer()
-
-                        if viewModel.selectedMode == mode {
-                            Image(systemName: "checkmark")
-                                .foregroundColor(Constants.FORGEIQ_GREEN)
-                        }
-                    }
-                    .padding(.horizontal, 24)
-                    .padding(.vertical, 16)
-                    .background(
-                        viewModel.selectedMode == mode
-                            ? Constants.FORGEIQ_GREEN.opacity(0.2)
-                            : Color.clear
-                    )
-                    .overlay(
-                        Rectangle()
-                            .frame(height: 1)
-                            .foregroundColor(Constants.FORGEIQ_GREEN.opacity(0.2)),
-                        alignment: .bottom
-                    )
-                }
-            }
-
-            Spacer()
-        }
-        .background(Constants.FORGEIQ_FORGE)
     }
 
     // MARK: - Animation Modifiers
@@ -317,5 +249,4 @@ struct HomeView: View {
     HomeView()
         .environmentObject(AudioRecordingManager())
         .environmentObject(SpeechTranscriptionManager())
-        .environmentObject(TranslationManager())
 }
