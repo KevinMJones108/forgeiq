@@ -259,7 +259,7 @@ ForgeIQ Transcript
 ──────────────────────────────────────────
 Date:       \(fullDate)
 Duration:   \(durationString)
-Language:   Auto-detected → \(translated != nil ? "Spanish" : "No translation")
+Language:   \(translated != nil ? "Auto-detected → \(targetLanguage.displayName)" : "No translation")
 Word Count: \(wordCount) words
 Rep:        Kevin
 ──────────────────────────────────────────

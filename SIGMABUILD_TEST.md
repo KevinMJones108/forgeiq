@@ -2,13 +2,54 @@
 
 **Product:** ForgeIQ  
 **Version:** 1.0 Phase 1  
-**Test Date:** 2026-05-25  
-**Test Type:** L1 AI Functional (Simulator)  
+**Test Date:** 2026-06-05 (latest re-test) / 2026-05-25 (original)  
+**Test Type:** L1 AI Functional + Simulator Build  
 **Persona:** P10 Sales Associate (Owen)
 
 ---
 
-## CURRENT SIGMA LEVEL: 1.5σ
+## CURRENT SIGMA LEVEL: 1.5σ — **L1 PENDING L2/DEVICE**
+
+> Honesty note (Kevin's no-BS-sigma rule): 1.5σ is an L1 code-inspection +
+> simulator-build estimate. It is NOT a verified final sigma. True L2 requires
+> on-device run (mic + Auth0 + live backend). See device-test list below.
+
+**Gate Status:** 🚫 **BLOCKED — DO NOT RELEASE**
+
+---
+
+## RE-TEST 2026-06-05 (L1 + Sim Build) — HONEST FINDINGS
+
+**Simulator build (iPhone 17, Debug):** ** BUILD SUCCEEDED ** (exit 0).
+BUT green build is misleading — 13 of 35 Swift files are EXCLUDED from the
+Xcode build target, so the broken/cloud code is never compiled.
+
+**Top blockers (full evidence in /tmp/sigma-audit-forgeiq.txt):**
+
+| # | Finding | RPN | Status |
+|---|---------|-----|--------|
+| F1 | 13 Swift files excluded from build target (all SalesForge, TTS, AuthTokenManager) | 360 | OPEN — Kevin must add to target |
+| F2 | ProductLibraryViewModel called non-existent `getToken()` | 280 | FIXED 2026-06-05 (→ getAccessToken) |
+| F3 | No Auth0 login flow → no JWT → all backend calls 401 | 270 | OPEN |
+| F4 | Translation is a stub that always throws; mode presented as working | 240 | PARTIAL — misleading label FIXED; translate() still stub |
+| F5 | Dual mic-session conflict (recorder + speech engine simultaneous) | 168 | OPEN — confirm on device |
+| F6 | ProfileTab pure stub (no sign-out / no sub mgmt) | 120 | OPEN |
+
+**Marketed features that DO NOT EXIST in code:**
+- "Blown past" detection — not in iOS, not in backend ai.routes.js.
+- Pipedrive auto-log — no crm route, no pipedrive code anywhere.
+- AI call-summary — exists in backend but the iOS app never calls it.
+
+**Apple gates:** Gate 1 (paywall .alert) PASS (no paywall exists). Gate 2/3 N/A
+until monetized/reachable. Device build not attempted (Apple-auth time sink).
+
+**Fixed this session (both re-verified — BUILD SUCCEEDED):**
+1. ProductLibraryViewModel.swift: getToken() → getAccessToken() ×4.
+2. HomeViewModel.swift: truthful transcript language header (no fake "Spanish").
+
+---
+
+## ORIGINAL 2026-05-25 BASELINE (below)
 
 **Gate Status:** 🚫 **DO NOT RELEASE** (3 release blockers)
 

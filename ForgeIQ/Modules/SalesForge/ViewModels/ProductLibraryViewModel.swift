@@ -23,7 +23,7 @@ class ProductLibraryViewModel: ObservableObject {
             return
         }
 
-        guard let token = AuthTokenManager.shared.getToken() else {
+        guard let token = AuthTokenManager.shared.getAccessToken() else {
             errorMessage = "Not authenticated"
             isLoading = false
             return
@@ -55,7 +55,7 @@ class ProductLibraryViewModel: ObservableObject {
     // MARK: - Create Product
     func createProduct(_ product: Product) async {
         guard let url = URL(string: "\(baseURL)/api/v1/products") else { return }
-        guard let token = AuthTokenManager.shared.getToken() else { return }
+        guard let token = AuthTokenManager.shared.getAccessToken() else { return }
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -91,7 +91,7 @@ class ProductLibraryViewModel: ObservableObject {
     // MARK: - Update Product
     func updateProduct(_ product: Product) async {
         guard let url = URL(string: "\(baseURL)/api/v1/products/\(product.id)") else { return }
-        guard let token = AuthTokenManager.shared.getToken() else { return }
+        guard let token = AuthTokenManager.shared.getAccessToken() else { return }
 
         var request = URLRequest(url: url)
         request.httpMethod = "PUT"
@@ -128,7 +128,7 @@ class ProductLibraryViewModel: ObservableObject {
     // MARK: - Delete Product
     func deleteProduct(_ id: UUID) async {
         guard let url = URL(string: "\(baseURL)/api/v1/products/\(id)") else { return }
-        guard let token = AuthTokenManager.shared.getToken() else { return }
+        guard let token = AuthTokenManager.shared.getAccessToken() else { return }
 
         var request = URLRequest(url: url)
         request.httpMethod = "DELETE"
