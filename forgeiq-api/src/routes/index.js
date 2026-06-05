@@ -11,5 +11,7 @@ router.use('/sigma', require('./sigma.routes'));
 router.use('/forge', require('./forge.routes'));
 router.use('/vapi', require('./vapi.routes'));
 router.use('/scripts', require('./scripts.routes')); // Session 11
+router.use('/calls', require('./calls.routes')); // Objection / blown-past detection (Claude)
+router.use('/pipedrive', require('./pipedrive.routes')); // Pipedrive auto-log
 
 module.exports = router;
