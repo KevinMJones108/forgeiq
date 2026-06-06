@@ -5,6 +5,10 @@ const morgan = require('morgan');
 
 const app = express();
 
+// Trust the Render proxy so req.ip is the real client IP (needed for per-IP
+// rate limiting). Safe on Render (single front proxy).
+app.set('trust proxy', 1);
+
 // Security middleware
 app.use(helmet());
 

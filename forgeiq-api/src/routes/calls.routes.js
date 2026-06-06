@@ -9,13 +9,15 @@ const {
   isConfigured,
   MODEL
 } = require('../services/objectionAnalysisService');
+const { aiRateLimit } = require('../middleware/aiRateLimit.middleware');
 
 const MAX_TRANSCRIPT_CHARS = 200000; // ~ generous upper bound; guards abuse.
 
 // POST /api/v1/calls/analyze
 // Body: { transcript: string, speakerLabels?: string[] | string }
 // Returns: { objections: [...], summary, talkRatio? }
-router.post('/analyze', async (req, res, next) => {
+// Gated by the guest AI rate limiter (calls the paid Anthropic API).
+router.post('/analyze', aiRateLimit, async (req, res, next) => {
   try {
     const { transcript, speakerLabels } = req.body || {};
 

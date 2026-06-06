@@ -5,10 +5,15 @@
 const express = require('express');
 const router = express.Router();
 const Anthropic = require('@anthropic-ai/sdk');
+const { aiRateLimit } = require('../middleware/aiRateLimit.middleware');
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY
 });
+
+// Guest AI rate limiter — gates every LLM endpoint in this router (these call
+// the paid Anthropic API and are currently reachable without auth).
+router.use(aiRateLimit);
 
 // POST /api/v1/ai/call-summary
 // Generate call summary with optional product spec accuracy analysis
