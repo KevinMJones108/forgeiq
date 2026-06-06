@@ -42,7 +42,8 @@ final class CallAnalysisViewModel: ObservableObject {
             let analysis = try await apiClient.analyzeTranscript(trimmed)
             state = .loaded(analysis)
         } catch let error as APIError {
-            let isAuth = (error == .notSignedIn)
+            let isAuth: Bool
+            if case .notSignedIn = error { isAuth = true } else { isAuth = false }
             state = .failed(
                 message: error.errorDescription ?? "Analysis failed.",
                 isAuth: isAuth
