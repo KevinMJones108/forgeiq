@@ -52,15 +52,12 @@ class SpeechTranscriptionManager: NSObject, ObservableObject {
         request.shouldReportPartialResults = true
         request.requiresOnDeviceRecognition = false // Use server for better accuracy
 
-        // Configure audio session
-        let audioSession = AVAudioSession.sharedInstance()
-        do {
-            try audioSession.setCategory(.record, mode: .measurement, options: .duckOthers)
-            try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
-        } catch {
-            errorMessage = "Audio session setup failed: \(error.localizedDescription)"
-            return
-        }
+        // NOTE: Do NOT reconfigure or re-activate the shared AVAudioSession here.
+        // AudioRecordingManager already configures the session (.playAndRecord) and
+        // calls setActive(true) when recording starts. The two managers run in parallel
+        // (see HomeViewModel.startRecording). A second setCategory/setActive on the same
+        // shared AVAudioSession.sharedInstance() would reconfigure the live session mid-record,
+        // interrupting the recorder. .playAndRecord already permits the input tap used below.
 
         // Configure audio engine input node
         let inputNode = audioEngine.inputNode

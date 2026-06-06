@@ -44,10 +44,16 @@ class TranslationManager: ObservableObject {
     ///   - to: Target locale
     /// - Returns: Translated text
     /// - Throws: Translation errors (unsupported language pair, network issues)
-    /// Translate text (Phase 2 — use .translationTask SwiftUI modifier)
-    func translate(text: String, from: Locale, to: Locale) async throws -> String {
-        // TODO: iOS 18 Translation API integration
-        throw TranslationError.unsupportedLanguagePair(from: from.language.minimalIdentifier, to: to.language.minimalIdentifier)
+    /// Translate text (Phase 2 — use .translationTask SwiftUI modifier).
+    /// Phase 1: on-device translation is not yet wired. Instead of throwing (which would
+    /// surface an error / risk a crash at any future call site), fail gracefully by
+    /// returning the original text unchanged and recording a non-fatal message. This keeps
+    /// the shipping flow intact until the iOS 18 Translation API is integrated.
+    func translate(text: String, from: Locale, to: Locale) async -> String {
+        await MainActor.run {
+            self.errorMessage = "Translation is not available yet — returning original text."
+        }
+        return text
     }
     // MARK: - Language Detection
 
