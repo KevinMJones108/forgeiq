@@ -1,0 +1,26 @@
+ForgeIQ — values to copy/paste (no secrets in this file)
+=========================================================
+
+AUTH0 CALLBACK URL
+------------------
+Paste this into Auth0 dashboard -> Applications -> your iOS app -> Settings,
+in BOTH "Allowed Callback URLs" and "Allowed Logout URLs", then Save Changes:
+
+ai.alviz.forgeiq://dev-yjrvxlswm4yk3zz7.auth0.com/ios/ai.alviz.forgeiq/callback
+
+
+RENDER ENV VALUES (already preset by render.yaml — for reference only)
+----------------------------------------------------------------------
+AUTH0_DOMAIN=dev-yjrvxlswm4yk3zz7.auth0.com
+AUTH0_AUDIENCE=https://forgeiq-api.onrender.com
+
+Secrets you paste directly into Render's form when prompted (from your own
+accounts — never into chat):
+ELEVEN_LABS_API_KEY   -> elevenlabs.io -> profile -> API Keys
+ANTHROPIC_API_KEY     -> console.anthropic.com -> API Keys
+PIPEDRIVE_API_TOKEN   -> Pipedrive -> Settings -> Personal preferences -> API
+
+
+BACKEND HEALTH CHECK (after deploy)
+-----------------------------------
+https://forgeiq-api.onrender.com/health

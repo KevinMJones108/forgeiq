@@ -1,0 +1,36 @@
+# ForgeIQ — Render Blueprint (repo root)
+# One-click deploy: Render Dashboard → New → Blueprint → select this repo.
+# Only 3 secrets are prompted at deploy time; everything else is preconfigured.
+
+services:
+  - type: web
+    name: forgeiq-api
+    runtime: node
+    rootDir: forgeiq-api
+    buildCommand: npm install
+    startCommand: node src/server.js
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: forgeiq-db
+          property: connectionString
+      - key: AUTH0_DOMAIN
+        value: dev-yjrvxlswm4yk3zz7.auth0.com
+      - key: AUTH0_AUDIENCE
+        value: https://forgeiq-api.onrender.com
+      - key: ELEVEN_LABS_API_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: PIPEDRIVE_API_TOKEN
+        sync: false
+
+databases:
+  - name: forgeiq-db
+    databaseName: forgeiq
+    user: forgeiq_user
+    plan: starter
