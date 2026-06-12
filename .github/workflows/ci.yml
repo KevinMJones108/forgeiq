@@ -4,6 +4,13 @@ on:
   push:
     branches: ["**"]
   pull_request:
+  workflow_dispatch:
+    inputs:
+      render_api_key:
+        description: "Optional: Render API key — triggers backend deploy (masked, never stored)"
+        required: false
+        type: string
+        default: ""
 
 jobs:
   backend-tests:
@@ -34,3 +41,19 @@ jobs:
       - run: npm test
         env:
           TEST_DATABASE_URL: postgres://forgeiq:forgeiq@localhost:5432/forgeiq_test
+
+  deploy-render:
+    if: github.event_name == 'workflow_dispatch' && inputs.render_api_key != ''
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mask API key in all logs
+        run: echo "::add-mask::${{ inputs.render_api_key }}"
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Deploy backend to Render
+        env:
+          RENDER_API_KEY: ${{ inputs.render_api_key }}
+          DEPLOY_BRANCH: claude/pensive-hopper-ixUSw
+        run: node scripts/render-deploy.js
