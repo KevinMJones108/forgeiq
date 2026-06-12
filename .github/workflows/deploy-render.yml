@@ -1,0 +1,25 @@
+name: Deploy to Render
+
+on:
+  workflow_dispatch:
+    inputs:
+      render_api_key:
+        description: "Render API key (used once, masked, never stored)"
+        required: true
+        type: string
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mask API key in all logs
+        run: echo "::add-mask::${{ inputs.render_api_key }}"
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Deploy backend to Render
+        env:
+          RENDER_API_KEY: ${{ inputs.render_api_key }}
+          DEPLOY_BRANCH: claude/pensive-hopper-ixUSw
+        run: node scripts/render-deploy.js
