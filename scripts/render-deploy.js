@@ -46,7 +46,8 @@ async function main() {
   if (!owner) fail('no owner found for this API key');
   console.log(`Owner: ${owner.name} (${owner.id})`);
 
-  // 2. Clean up stale squatters (only if they have never been live)
+  // 2. Idempotency: if forgeiq-api already exists and has been live, do NOT
+  // touch anything — this guard makes accidental re-runs harmless.
   const services = await api('GET', '/services?limit=100');
   if (services.status !== 200) fail(`list services failed (HTTP ${services.status})`);
   for (const item of services.json) {
@@ -54,12 +55,18 @@ async function main() {
     if (s.name !== 'forgeiq-api') continue;
     const deploys = await api('GET', `/services/${s.id}/deploys?limit=20`);
     const everLive = (deploys.json || []).some((d) => d.deploy && d.deploy.status === 'live');
-    if (everLive) fail(`existing service forgeiq-api (${s.id}) has been live before — refusing to delete automatically. Delete it in the dashboard if intended.`);
+    if (everLive) {
+      console.log(`forgeiq-api (${s.id}) already exists and has been live — nothing to do.`);
+      console.log('Re-deploys happen automatically on git push (autoDeploy: yes).');
+      return;
+    }
     console.log(`Deleting stale service forgeiq-api (${s.id}, created ${s.createdAt}, never live)`);
     const del = await api('DELETE', `/services/${s.id}`);
     if (del.status !== 204 && del.status !== 200) fail(`delete service failed (HTTP ${del.status})`, del.text);
   }
 
+  // Only delete a leftover forgeiq-db when no live forgeiq-api exists (above
+  // guard already returned otherwise) AND we are about to recreate the stack.
   const pgList = await api('GET', '/postgres?limit=100');
   if (pgList.status === 200) {
     for (const item of pgList.json) {

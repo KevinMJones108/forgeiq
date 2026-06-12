@@ -11,6 +11,11 @@ on:
         required: false
         type: string
         default: ""
+      verify:
+        description: "Set to 'true' to just check the live backend health endpoint"
+        required: false
+        type: string
+        default: ""
 
 jobs:
   backend-tests:
@@ -57,3 +62,19 @@ jobs:
           RENDER_API_KEY: ${{ inputs.render_api_key }}
           DEPLOY_BRANCH: claude/pensive-hopper-ixUSw
         run: node scripts/render-deploy.js
+
+  verify-health:
+    if: github.event_name == 'workflow_dispatch' && inputs.verify == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check live backend health endpoint
+        run: |
+          echo "Probing https://forgeiq-api.onrender.com/health"
+          for i in 1 2 3 4 5; do
+            BODY=$(curl -s -m 20 https://forgeiq-api.onrender.com/health || true)
+            echo "attempt $i: $BODY"
+            echo "$BODY" | grep -q '"success":true' && echo "✅ BACKEND IS LIVE AND HEALTHY" && exit 0
+            sleep 15
+          done
+          echo "❌ health check did not return success:true after 5 attempts"
+          exit 1
