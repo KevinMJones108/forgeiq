@@ -11,11 +11,10 @@ import SwiftUI
 enum Constants {
     // MARK: - API Configuration
 
-    #if DEBUG
-    static let API_BASE_URL = "http://localhost:3001"
-    #else
+    // Backend is live on Render — Debug builds on a physical iPhone must use
+    // the prod URL too (localhost on the phone is the phone itself).
+    // For local backend dev on Simulator, temporarily switch to localhost.
     static let API_BASE_URL = "https://forgeiq-api.onrender.com"
-    #endif
 
     // MARK: - Auth0 Configuration
 
