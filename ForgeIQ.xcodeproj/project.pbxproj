@@ -26,6 +26,23 @@
 		E167E59B2EE02554BF19B62F /* Transcript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973B5F87FAFFF384275659BA /* Transcript.swift */; };
 		E7E19B52FE5CF946F0A13B43 /* WaveformView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A17F5E98BF86E078CB61309 /* WaveformView.swift */; };
 		EAE5DB752799252DB03C4676 /* SpeechTranscriptionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F93B3D3E4A230BF907D43D9 /* SpeechTranscriptionManager.swift */; };
+		B10000001 /* ElevenLabsTTSManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000001 /* ElevenLabsTTSManager.swift */; };
+		B10000002 /* VoicePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000002 /* VoicePickerView.swift */; };
+		B10000003 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000003 /* APIClient.swift */; };
+		B10000004 /* AuthTokenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000004 /* AuthTokenManager.swift */; };
+		B10000005 /* AudioPlaybackManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000005 /* AudioPlaybackManager.swift */; };
+		B10000006 /* CallSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000006 /* CallSummary.swift */; };
+		B10000007 /* Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000007 /* Subscription.swift */; };
+		B10000008 /* ForgeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000008 /* ForgeButton.swift */; };
+		B10000009 /* TranscriptCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000009 /* TranscriptCard.swift */; };
+		B10000010 /* CallSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000010 /* CallSummaryView.swift */; };
+		B10000011 /* BlownPastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000011 /* BlownPastView.swift */; };
+		B10000012 /* CallSummaryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000012 /* CallSummaryViewModel.swift */; };
+		B10000013 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000013 /* LoginView.swift */; };
+		B10000014 /* ProfileTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000014 /* ProfileTabView.swift */; };
+		B10000015 /* RepDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000015 /* RepDashboardView.swift */; };
+		B10000016 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000016 /* ProfileViewModel.swift */; };
+		B10000017 /* Auth0 in Frameworks */ = {isa = PBXBuildFile; productRef = B40000002 /* Auth0 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +67,22 @@
 		F5FEA49FE159A6506CE53D39 /* HomeView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HomeView.swift; path = Modules/VoiceCore/Views/HomeView.swift; sourceTree = "<group>"; };
 		FAF654D674765CF9D6738BD7 /* AudioRecordingManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AudioRecordingManager.swift; path = Core/Audio/AudioRecordingManager.swift; sourceTree = "<group>"; };
 		FB687F0D13FB153666CAC978 /* HomeViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HomeViewModel.swift; path = Modules/VoiceCore/ViewModels/HomeViewModel.swift; sourceTree = "<group>"; };
+		B20000001 /* ElevenLabsTTSManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ElevenLabsTTSManager.swift; path = Core/ElevenLabs/ElevenLabsTTSManager.swift; sourceTree = "<group>"; };
+		B20000002 /* VoicePickerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = VoicePickerView.swift; path = Modules/VoiceCore/Views/VoicePickerView.swift; sourceTree = "<group>"; };
+		B20000003 /* APIClient.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = APIClient.swift; path = Core/API/APIClient.swift; sourceTree = "<group>"; };
+		B20000004 /* AuthTokenManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AuthTokenManager.swift; path = Core/API/AuthTokenManager.swift; sourceTree = "<group>"; };
+		B20000005 /* AudioPlaybackManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AudioPlaybackManager.swift; path = Core/Audio/AudioPlaybackManager.swift; sourceTree = "<group>"; };
+		B20000006 /* CallSummary.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CallSummary.swift; path = Shared/Models/CallSummary.swift; sourceTree = "<group>"; };
+		B20000007 /* Subscription.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Subscription.swift; path = Shared/Models/Subscription.swift; sourceTree = "<group>"; };
+		B20000008 /* ForgeButton.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ForgeButton.swift; path = Shared/Components/ForgeButton.swift; sourceTree = "<group>"; };
+		B20000009 /* TranscriptCard.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TranscriptCard.swift; path = Shared/Components/TranscriptCard.swift; sourceTree = "<group>"; };
+		B20000010 /* CallSummaryView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CallSummaryView.swift; path = Modules/VoiceCore/Views/CallSummaryView.swift; sourceTree = "<group>"; };
+		B20000011 /* BlownPastView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BlownPastView.swift; path = Modules/VoiceCore/Views/BlownPastView.swift; sourceTree = "<group>"; };
+		B20000012 /* CallSummaryViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CallSummaryViewModel.swift; path = Modules/VoiceCore/ViewModels/CallSummaryViewModel.swift; sourceTree = "<group>"; };
+		B20000013 /* LoginView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LoginView.swift; path = Modules/Admin/Views/LoginView.swift; sourceTree = "<group>"; };
+		B20000014 /* ProfileTabView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProfileTabView.swift; path = Modules/Admin/Views/ProfileTabView.swift; sourceTree = "<group>"; };
+		B20000015 /* RepDashboardView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RepDashboardView.swift; path = Modules/Admin/Views/RepDashboardView.swift; sourceTree = "<group>"; };
+		B20000016 /* ProfileViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProfileViewModel.swift; path = Modules/Admin/ViewModels/ProfileViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +90,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B10000017 /* Auth0 in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -93,6 +127,22 @@
 				633E8225A7C579D26A244EDD /* Recording.swift */,
 				973B5F87FAFFF384275659BA /* Transcript.swift */,
 				63DA48EBDA584557E81CC698 /* User.swift */,
+				B20000001 /* ElevenLabsTTSManager.swift */,
+				B20000002 /* VoicePickerView.swift */,
+				B20000003 /* APIClient.swift */,
+				B20000004 /* AuthTokenManager.swift */,
+				B20000005 /* AudioPlaybackManager.swift */,
+				B20000006 /* CallSummary.swift */,
+				B20000007 /* Subscription.swift */,
+				B20000008 /* ForgeButton.swift */,
+				B20000009 /* TranscriptCard.swift */,
+				B20000010 /* CallSummaryView.swift */,
+				B20000011 /* BlownPastView.swift */,
+				B20000012 /* CallSummaryViewModel.swift */,
+				B20000013 /* LoginView.swift */,
+				B20000014 /* ProfileTabView.swift */,
+				B20000015 /* RepDashboardView.swift */,
+				B20000016 /* ProfileViewModel.swift */,
 			);
 			path = ForgeIQ;
 			sourceTree = "<group>";
@@ -130,6 +180,9 @@
 			dependencies = (
 			);
 			name = ForgeIQ;
+			packageProductDependencies = (
+				B40000002 /* Auth0 */,
+			);
 			productName = ForgeIQ;
 			productReference = A30000001 /* ForgeIQ.app */;
 			productType = "com.apple.product-type.application";
@@ -158,6 +211,9 @@
 				Base,
 			);
 			mainGroup = A50000001;
+			packageReferences = (
+				B30000001 /* XCRemoteSwiftPackageReference "Auth0.swift" */,
+			);
 			productRefGroup = A50000003 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -201,6 +257,22 @@
 				A1287D0B0D66C2CC26CEE62F /* Recording.swift in Sources */,
 				E167E59B2EE02554BF19B62F /* Transcript.swift in Sources */,
 				542BA0798965907613B0456D /* User.swift in Sources */,
+				B10000001 /* ElevenLabsTTSManager.swift in Sources */,
+				B10000002 /* VoicePickerView.swift in Sources */,
+				B10000003 /* APIClient.swift in Sources */,
+				B10000004 /* AuthTokenManager.swift in Sources */,
+				B10000005 /* AudioPlaybackManager.swift in Sources */,
+				B10000006 /* CallSummary.swift in Sources */,
+				B10000007 /* Subscription.swift in Sources */,
+				B10000008 /* ForgeButton.swift in Sources */,
+				B10000009 /* TranscriptCard.swift in Sources */,
+				B10000010 /* CallSummaryView.swift in Sources */,
+				B10000011 /* BlownPastView.swift in Sources */,
+				B10000012 /* CallSummaryViewModel.swift in Sources */,
+				B10000013 /* LoginView.swift in Sources */,
+				B10000014 /* ProfileTabView.swift in Sources */,
+				B10000015 /* RepDashboardView.swift in Sources */,
+				B10000016 /* ProfileViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -414,6 +486,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		B30000001 /* XCRemoteSwiftPackageReference "Auth0.swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/auth0/Auth0.swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		B40000002 /* Auth0 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B30000001 /* XCRemoteSwiftPackageReference "Auth0.swift" */;
+			productName = Auth0;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = A00000001 /* Project object */;
 }
