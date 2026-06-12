@@ -118,4 +118,4 @@ function isReEngagementCandidate(summary) {
   return (summary.call_score !== null && summary.call_score < 5) || highSignals >= 2;
 }
 
-module.exports = { generateCallSummary, isReEngagementCandidate };
+module.exports = { generateCallSummary, isReEngagementCandidate, normaliseSummary };
