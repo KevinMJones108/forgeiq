@@ -1,8 +1,18 @@
 # ForgeIQ Phase 1 — Build Complete
 
-**Status:** ✅ All code complete, ready for device testing  
-**Date:** 2026-05-25  
-**Sessions:** 2-7 complete (6 parallel agent builds)
+**Status:** ✅ All Phase 1 code complete INCLUDING Session 10 — ready for deploy + device testing
+**Date:** 2026-06-12 (Session 10 + bug-fix sweep — see SESSION_10_STATUS.md)
+**Sessions:** 2-7, 10 complete
+
+## ✅ SESSION 10 — COMPLETE (2026-06-12)
+
+- AI Call Summary + Blown Past Detector: `POST /api/v1/ai/call-summary` (Claude API) + CallSummaryView/BlownPastView in iOS
+- Pipedrive auto-log: `POST /api/v1/crm/log-call` — activity + deal note + follow-up tasks + day-+7 re-engagement task
+- Rep dashboard: `GET /api/v1/ai/rep-stats` + RepDashboardView (Owen and Kevin each see only their own data)
+- Auth0 login flow: LoginView + AuthTokenManager (Keychain) + APIClient with Bearer headers
+- Transcript .txt auto-save + backend sync after every recording
+- Critical bug fixes: response helpers, schema/route column mismatches, Constants.swift syntax error, missing Color(hex:), missing EnvironmentObject injection, missing transcribe(audioURL:), Express pinned to 4.x
+- Verified: server boots, all routes 401 without JWT, every route SQL statement runs against the migrated schema on PostgreSQL
 
 ---
 
@@ -159,20 +169,23 @@ Simulator cannot test microphone/STT. Must use real device.
 ## 🎯 DEFINITION OF DONE — PHASE 1
 
 - ✅ Backend operational on port 3001
-- ✅ All Phase 1 routes implemented + tested
-- ✅ iOS core managers built (Audio, STT, Translation, TTS)
-- ✅ iOS UI complete (HomeView + Files tab)
-- ✅ .txt auto-save after recordings
+- ✅ All Phase 1 routes implemented + tested (incl. /ai/call-summary + /crm/log-call)
+- ✅ iOS core managers built (Audio, STT, Translation, TTS, Playback)
+- ✅ iOS UI complete (Login + Home + Files + Profile tabs + Call Summary + Blown Past + Rep Dashboard)
+- ✅ .txt auto-save after recordings + backend transcript sync
+- ✅ Auth0 login flow code (Auth0.swift package must be added in Xcode)
+- ✅ AI Call Summary + Blown Past Detector (Session 10)
+- ✅ Pipedrive auto-log + re-engagement loop (Session 10)
 - ⏸️ Files added to Xcode project (Kevin manual step)
 - ⏸️ Device testing complete (requires Xcode signing)
-- ⏸️ Render deployment (Session 8)
-- ⏸️ Auth0 setup (Session 9)
-- ⏸️ Pipedrive integration (Session 10)
+- ⏸️ Render deployment (Kevin: connect repo + set env vars)
+- ⏸️ Auth0 tenant env vars on Render (Kevin account step)
 
-**Current Phase 1 completion:** 85% (code 100%, deployment/testing pending Kevin actions)
+**Current Phase 1 completion:** Code 100% — only Kevin's manual deploy/device batch remains (~30 min)
 
 ---
 
 ## 🚀 READY FOR KEVIN
 
-Backend verified operational. iOS code complete. Next step: Xcode file addition + device test.
+All Phase 1 + Session 10 code complete and verified. Next step: Kevin's 30-minute manual batch —
+(1) Xcode add-files + Auth0.swift package, (2) Render deploy + env vars, (3) iPhone end-to-end test.

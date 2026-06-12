@@ -2,6 +2,20 @@ import Speech
 import AVFoundation
 import Combine
 
+enum SpeechError: LocalizedError {
+    case permissionDenied
+    case recognizerUnavailable
+
+    var errorDescription: String? {
+        switch self {
+        case .permissionDenied:
+            return "Speech recognition permission denied. Enable it in Settings."
+        case .recognizerUnavailable:
+            return "Speech recognition is not available on this device."
+        }
+    }
+}
+
 class SpeechTranscriptionManager: NSObject, ObservableObject {
     // MARK: - Published Properties
 
@@ -126,6 +140,40 @@ class SpeechTranscriptionManager: NSObject, ObservableObject {
 
         // Return final transcript
         return transcriptText
+    }
+
+    // MARK: - File Transcription
+
+    /// Transcribes a saved audio file (.m4a) — used after AVAudioRecorder finishes
+    func transcribe(audioURL: URL, locale: Locale = Locale.current) async throws -> String {
+        guard await requestSpeechPermission() else {
+            throw SpeechError.permissionDenied
+        }
+
+        guard let recognizer = SFSpeechRecognizer(locale: locale), recognizer.isAvailable else {
+            throw SpeechError.recognizerUnavailable
+        }
+
+        let request = SFSpeechURLRecognitionRequest(url: audioURL)
+        request.shouldReportPartialResults = false
+
+        return try await withCheckedThrowingContinuation { continuation in
+            var didResume = false
+            recognizer.recognitionTask(with: request) { result, error in
+                if let error {
+                    if !didResume {
+                        didResume = true
+                        continuation.resume(throwing: error)
+                    }
+                    return
+                }
+                guard let result, result.isFinal else { return }
+                if !didResume {
+                    didResume = true
+                    continuation.resume(returning: result.bestTranscription.formattedString)
+                }
+            }
+        }
     }
 
     // MARK: - Cleanup

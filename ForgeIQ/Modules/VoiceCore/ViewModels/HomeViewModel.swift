@@ -19,6 +19,8 @@ class HomeViewModel: ObservableObject {
     @Published var duration: TimeInterval = 0
     @Published var showModeSheet: Bool = false
     @Published var selectedMode: RecordingMode = .recordOnly
+    @Published var syncedRecordingId: UUID?
+    @Published var saveStatusMessage: String?
 
     // MARK: - Managers (injected from environment)
 
@@ -133,6 +135,8 @@ class HomeViewModel: ObservableObject {
                 if selectedMode == .recordAndTranslate, let translationManager {
                     // Translation logic will be added when TranslationManager is integrated
                 }
+
+                await saveAndSync(audioURL: audioURL, transcriptText: transcript)
             } catch {
                 print("Transcription failed: \(error.localizedDescription)")
                 await MainActor.run {
@@ -142,11 +146,57 @@ class HomeViewModel: ObservableObject {
         }
     }
 
+    // MARK: - Auto-Save + Backend Sync
+
+    private func saveAndSync(audioURL: URL, transcriptText: String) async {
+        // 1. Auto-save .txt next to the .m4a (same UUID filename — Files tab pairs them)
+        let transcript = Transcript(
+            originalText: transcriptText,
+            originalLanguage: "en",
+            translatedText: translatedText,
+            targetLanguage: translatedText != nil ? "es" : nil
+        )
+        let fileContents = transcript.toFileString(duration: durationString, createdAt: Date())
+        let txtURL = audioURL.deletingPathExtension().appendingPathExtension("txt")
+
+        do {
+            try fileContents.write(to: txtURL, atomically: true, encoding: .utf8)
+            saveStatusMessage = "Saved to Files"
+        } catch {
+            saveStatusMessage = "Local save failed: \(error.localizedDescription)"
+            return
+        }
+
+        // 2. Sync to backend (requires login — skipped silently when signed out)
+        guard AuthTokenManager.shared.hasValidToken else { return }
+
+        do {
+            let title = "Call \(Date().formatted(date: .abbreviated, time: .shortened))"
+            let remote = try await APIClient.shared.createRecording(
+                title: title,
+                durationSec: max(Int(duration), 1)
+            )
+            try await APIClient.shared.saveTranscript(
+                recordingId: remote.id,
+                text: transcriptText,
+                sourceLanguage: "en",
+                translatedText: translatedText,
+                targetLanguage: translatedText != nil ? "es" : nil
+            )
+            syncedRecordingId = remote.id
+            saveStatusMessage = "Saved + synced to ForgeIQ"
+        } catch {
+            saveStatusMessage = "Saved locally — sync failed: \(error.localizedDescription)"
+        }
+    }
+
     private func reset() {
         recordingState = .idle
         duration = 0
         transcriptText = ""
         translatedText = nil
+        syncedRecordingId = nil
+        saveStatusMessage = nil
         haptics.impactOccurred()
         stopDurationTimer()
     }

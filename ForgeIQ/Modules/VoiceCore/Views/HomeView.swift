@@ -232,10 +232,23 @@ struct HomeView: View {
                 .cornerRadius(12)
             }
 
-            Button(action: {
-                // Save action will be implemented in Session 7
-            }) {
-                Text("Saved to Files")
+            if let saveStatus = viewModel.saveStatusMessage {
+                Text(saveStatus)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundColor(Constants.FORGEIQ_GREEN)
+                    .frame(maxWidth: .infinity)
+            }
+
+            // Session 10 — AI Call Summary + Blown Past + Pipedrive log
+            NavigationLink {
+                CallSummaryView(
+                    recordingId: viewModel.syncedRecordingId,
+                    transcript: viewModel.transcriptText,
+                    contactName: "Prospect",
+                    duration: viewModel.durationString
+                )
+            } label: {
+                Label("AI Call Summary", systemImage: "sparkles")
                     .font(.system(size: 14, weight: .semibold))
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)

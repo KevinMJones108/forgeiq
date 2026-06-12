@@ -1,13 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { Pool } = require('pg');
+const { pool } = require('../db');
 const { checkJwt } = require('../middleware/auth.middleware');
 const { success, error } = require('../utils/response');
-
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
-});
+const elevenLabs = require('../services/elevenLabsService');
 
 // Helper to get user_id from JWT
 async function getUserId(auth0_sub) {
@@ -225,36 +221,12 @@ router.post('/tts', checkJwt, async (req, res, next) => {
       return res.status(400).json(error('text and voice_id required'));
     }
 
-    if (!process.env.ELEVEN_LABS_API_KEY) {
-      return res.status(500).json(error('ElevenLabs API key not configured'));
-    }
+    const response = await elevenLabs.synthesise(text, voice_id);
 
-    // Call ElevenLabs API
-    const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voice_id}`, {
-      method: 'POST',
-      headers: {
-        'xi-api-key': process.env.ELEVEN_LABS_API_KEY,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        text,
-        model_id: 'eleven_multilingual_v2',
-        voice_settings: {
-          stability: 0.5,
-          similarity_boost: 0.75
-        }
-      })
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('ElevenLabs API error:', response.status, errorText);
-      return res.status(response.status).json(error('ElevenLabs API error'));
-    }
-
-    // Stream audio back to iOS
+    // Stream audio back to iOS (web ReadableStream → Node response)
     res.setHeader('Content-Type', 'audio/mpeg');
-    response.body.pipe(res);
+    const { Readable } = require('stream');
+    Readable.fromWeb(response.body).pipe(res);
   } catch (err) {
     next(err);
   }

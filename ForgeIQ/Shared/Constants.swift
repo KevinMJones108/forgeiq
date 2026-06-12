@@ -32,6 +32,27 @@ enum Constants {
     static let FORGEIQ_MID_GREY = Color(hex: "#555555")
 }
 
-// Color extension removed - declared elsewhere
+// MARK: - Color Hex Initializer
+
+extension Color {
+    init(hex: String) {
+        let hexString = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        var value: UInt64 = 0
+        Scanner(string: hexString).scanHexInt64(&value)
+
+        let red: Double
+        let green: Double
+        let blue: Double
+        if hexString.count == 6 {
+            red = Double((value >> 16) & 0xFF) / 255.0
+            green = Double((value >> 8) & 0xFF) / 255.0
+            blue = Double(value & 0xFF) / 255.0
+        } else {
+            red = 0
+            green = 0
+            blue = 0
+        }
+
+        self.init(.sRGB, red: red, green: green, blue: blue, opacity: 1.0)
     }
 }

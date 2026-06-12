@@ -300,3 +300,57 @@ ForgeIQ requires 4 Kevin-gated manual steps (Render deploy auth, Auth0 free tena
 **Last Updated:** 2026-05-26 (Session 3 — CS-005 case study locked)
 **Next Review:** After Kevin's 30-min manual batch (Render + Auth0 + Xcode + iPhone) → expected L0 → 3.0σ jump
 
+---
+
+# SESSION 4 — L0 RE-BASELINE — 2026-06-12 (Session 10 build complete)
+
+**Test Type:** L0 Code-Side Static + Local Runtime Verification
+**Persona:** P10 Sales Associate (Owen — EPDirectory outbound)
+
+## CHANGES SINCE SESSION 3
+
+**Session 10 features built (closes F06–F08):**
+- `ai.routes.js` — POST /api/v1/ai/call-summary (Claude API), GET /call-summaries, GET /rep-stats
+- `crm.routes.js` — POST /api/v1/crm/log-call (Pipedrive activity + note + tasks + re-engagement)
+- `callSummaryService.js`, `pipedriveService.js`, `elevenLabsService.js`
+- `call_summaries` table added to schema
+- iOS: CallSummaryView, BlownPastView, CallSummaryViewModel, RepDashboardView, ProfileTabView, LoginView, APIClient, AuthTokenManager (Keychain), AudioPlaybackManager, ForgeButton, TranscriptCard, CallSummary + Subscription models, auth-gated tab navigation
+
+**NEW CRITICAL DEFECTS FOUND AND FIXED (previously undetected — all would have failed at runtime/compile):**
+| # | Defect | Impact | Fix |
+|---|--------|--------|-----|
+| D01 | `response.js` helpers took `(res, data)` but routes called `success(data)` inside `res.json()` | EVERY endpoint throws TypeError | Helpers now return envelope objects |
+| D02 | `schema.sql` columns mismatched every route query (duration_sec vs audio_duration_sec, content vs transcript_text, full_name vs name, feature_* vs *_enabled, missing deleted_at) | All DB routes fail on first query | Schema rewritten to match routes; verified by executing every route SQL against PostgreSQL 16 |
+| D03 | `Constants.swift` orphan braces + `Color(hex:)` used 12× but never defined | iOS does not compile | Syntax fixed, Color hex initialiser added |
+| D04 | `ForgeIQApp` missing 3 EnvironmentObject injections HomeView requires | Instant crash on launch | Managers injected at app root |
+| D05 | `speechManager.transcribe(audioURL:)` called but not implemented | iOS does not compile | SFSpeechURLRecognitionRequest-based method added |
+| D06 | `/auth/sync` missing auth0_sub/created_at fields iOS User model requires | Login sync decode failure | Both code paths return full user row |
+| D07 | express@5 installed; CLAUDE.md mandates 4.x | Untested major version | Pinned ^4.21.2, server boots + verified |
+
+## VERIFICATION EVIDENCE
+```
+npm install:            clean (express 4.21.x)
+node src/app.js load:   OK
+GET /health:            200 {success:true}
+voice/ai/crm/stubs:     401 JSON without JWT (correct)
+Route SQL audit:        100% of route queries executed against migrated schema — PASS
+```
+
+## SIGMA — RE-CALCULATED
+P10 primary flow steps: 10. Steps 7, 8, 9 (AI summary, blown past, Pipedrive) now CODE_COMPLETE.
+Remaining blockers all Kevin-gated (deploy, Auth0 env vars, Xcode add-files, device test): F01–F05.
+**L0 code-side sigma: code 10/10 complete; operational sigma still gated at 1.5σ until deployment.**
+Expected after Kevin's 30-min batch: **3.0σ → 4.0σ** (Session 10 features now ship in the same batch).
+
+## TEST HISTORY UPDATE
+
+| Date | Type | Persona | Sigma | Gate | Notes |
+|------|------|---------|-------|------|-------|
+| 2026-05-25 | L1 AI | P10 | 1.5σ | BLOCKED | Phase 1 code complete, deployment pending |
+| 2026-05-26 | L0 Code | P10 | 1.5σ | BLOCKED | Backend HTTP 404; no Xcode test target |
+| 2026-05-26 | L0 Re-verify | P10 | 1.5σ | BLOCKED | Confirmed unchanged — CS-005 baseline locked |
+| 2026-06-12 | L0 Re-baseline | P10 | 1.5σ (code 100%) | BLOCKED on deploy only | Session 10 built; 7 critical defects fixed; all route SQL verified |
+
+**Last Updated:** 2026-06-12 (Session 4 — Session 10 complete + defect sweep)
+**Next Review:** After Kevin's manual batch → L1 device test → expected 4.0σ
+

@@ -1,15 +1,20 @@
-function success(res, data, status = 200) {
-  res.status(status).json({
+// Standard API response envelope: { success, data, error }
+// Usage: res.json(success({ ... }))  /  res.status(400).json(error('message'))
+
+function success(data) {
+  return {
     success: true,
-    data
-  });
+    data,
+    error: null
+  };
 }
 
-function error(res, message, status = 400) {
-  res.status(status).json({
+function error(message) {
+  return {
     success: false,
+    data: null,
     error: message
-  });
+  };
 }
 
 module.exports = { success, error };

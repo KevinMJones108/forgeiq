@@ -1,13 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { Pool } = require('pg');
+const { pool } = require('../db');
 const { checkJwt } = require('../middleware/auth.middleware');
 const { success, error } = require('../utils/response');
-
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
-});
 
 // POST /api/v1/auth/sync
 // First login - create user + subscription if new
@@ -18,7 +13,7 @@ router.post('/sync', checkJwt, async (req, res, next) => {
 
     // Check if user exists
     let userResult = await pool.query(
-      'SELECT id, email, name FROM users WHERE auth0_sub = $1',
+      'SELECT id, auth0_sub, email, name, created_at FROM users WHERE auth0_sub = $1',
       [auth0_sub]
     );
 
@@ -28,7 +23,7 @@ router.post('/sync', checkJwt, async (req, res, next) => {
       const insertUser = await pool.query(
         `INSERT INTO users (auth0_sub, email, name)
          VALUES ($1, $2, $3)
-         RETURNING id, email, name, created_at`,
+         RETURNING id, auth0_sub, email, name, created_at`,
         [auth0_sub, email, name]
       );
       user = insertUser.rows[0];

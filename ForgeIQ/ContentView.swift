@@ -4,38 +4,61 @@
 //
 //  Created by Kevin Jones via Claude Code
 //  Session 1 — Xcode project creation
+//  Session 9 — auth gate + main tab navigation
 //
 
 import SwiftUI
 
 struct ContentView: View {
+    // MARK: - State
+
+    @EnvironmentObject var appEnvironment: AppEnvironment
+
+    // MARK: - Body
+
     var body: some View {
-        ZStack {
-            Constants.FORGEIQ_FORGE
-                .ignoresSafeArea()
-
-            VStack(spacing: 20) {
-                Text("ForgeIQ")
-                    .font(.system(size: 48, weight: .bold))
-                    .foregroundColor(.white)
-
-                Text("Session 1 — Xcode Project Created")
-                    .font(.system(size: 16))
-                    .foregroundColor(Constants.FORGEIQ_MID_GREY)
-
-                Circle()
-                    .fill(Constants.FORGEIQ_GREEN)
-                    .frame(width: 120, height: 120)
-                    .overlay(
-                        Image(systemName: "checkmark")
-                            .font(.system(size: 60, weight: .bold))
-                            .foregroundColor(.white)
-                    )
+        Group {
+            if appEnvironment.isAuthenticated {
+                mainTabs
+            } else {
+                LoginView()
             }
         }
+        .animation(.spring(response: 0.4, dampingFraction: 0.7), value: appEnvironment.isAuthenticated)
+    }
+
+    // MARK: - Main Tabs
+
+    private var mainTabs: some View {
+        TabView {
+            NavigationStack {
+                HomeView()
+            }
+            .tabItem {
+                Label("Record", systemImage: "mic.fill")
+            }
+
+            FilesTabView()
+                .tabItem {
+                    Label("Files", systemImage: "folder.fill")
+                }
+
+            ProfileTabView()
+                .tabItem {
+                    Label("Profile", systemImage: "person.fill")
+                }
+        }
+        .tint(Constants.FORGEIQ_GREEN)
     }
 }
 
+// MARK: - Preview
+
 #Preview {
     ContentView()
+        .environmentObject(AppEnvironment())
+        .environmentObject(AudioRecordingManager())
+        .environmentObject(SpeechTranscriptionManager())
+        .environmentObject(TranslationManager())
+        .environmentObject(ElevenLabsTTSManager())
 }

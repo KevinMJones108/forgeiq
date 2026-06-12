@@ -228,15 +228,21 @@ struct TranscriptDetailView: View {
         Task {
             do {
                 // Call backend TTS endpoint
-                let url = URL(string: "\(Constants.API_BASE_URL)/api/v1/voice/tts")!
+                guard let url = URL(string: "\(Constants.API_BASE_URL)/api/v1/voice/tts") else {
+                    throw NSError(domain: "ElevenLabs", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid TTS URL"])
+                }
+                guard let token = AuthTokenManager.shared.accessToken else {
+                    throw NSError(domain: "ElevenLabs", code: 401, userInfo: [NSLocalizedDescriptionKey: "Please sign in to use read-back"])
+                }
                 var request = URLRequest(url: url)
                 request.httpMethod = "POST"
                 request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-                // TODO: Add JWT token header in Session 10 (Auth0)
+                request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
 
+                let selectedVoice = UserDefaults.standard.string(forKey: "selectedVoiceId") ?? "21m00Tcm4TlvDq8ikWAM"
                 let body: [String: Any] = [
                     "text": transcript.displayText,
-                    "voice_id": "default" // TODO: Allow user to select voice
+                    "voice_id": selectedVoice
                 ]
                 request.httpBody = try JSONSerialization.data(withJSONObject: body)
 
