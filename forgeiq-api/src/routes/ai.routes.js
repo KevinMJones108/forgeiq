@@ -7,9 +7,23 @@ const router = express.Router();
 const Anthropic = require('@anthropic-ai/sdk');
 const { aiRateLimit } = require('../middleware/aiRateLimit.middleware');
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY
-});
+// Graceful degradation (Gate 3 support): never construct the client at module
+// load and never call Anthropic without a key. Missing ANTHROPIC_API_KEY ->
+// clean 503 JSON ("analysis not configured"), same pattern as calls.routes.js.
+let anthropicClient = null;
+
+function isConfigured() {
+  return Boolean(process.env.ANTHROPIC_API_KEY);
+}
+
+function getAnthropicClient() {
+  if (!anthropicClient) {
+    anthropicClient = new Anthropic({
+      apiKey: process.env.ANTHROPIC_API_KEY
+    });
+  }
+  return anthropicClient;
+}
 
 // Guest AI rate limiter — gates every LLM endpoint in this router (these call
 // the paid Anthropic API and are currently reachable without auth).
@@ -26,6 +40,15 @@ router.post('/call-summary', async (req, res, next) => {
         success: false,
         data: null,
         error: 'transcript is required'
+      });
+    }
+
+    // --- config gate (graceful degradation when ANTHROPIC_API_KEY missing) ---
+    if (!isConfigured()) {
+      return res.status(503).json({
+        success: false,
+        data: null,
+        error: 'analysis not configured'
       });
     }
 
@@ -49,8 +72,8 @@ Product specs provided to rep BEFORE call:
 ${JSON.stringify(product_specs, null, 2)}`;
     }
 
-    const message = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+    const message = await getAnthropicClient().messages.create({
+      model: 'claude-sonnet-4-6',
       max_tokens: 2048,
       system: systemPrompt,
       messages: [
@@ -92,14 +115,39 @@ ${JSON.stringify(product_specs, null, 2)}`;
 
 // Helper functions to extract structured data from Claude's text response
 function extractScore(text) {
-  const match = text.match(/score[:\s]+(\d+)/i);
-  return match ? parseInt(match[1], 10) : null;
+  // Broadened to tolerate Claude markdown: "**Call Quality Score:** 7/10",
+  // "Score: 7 out of 10", "Quality Score - 7". Strictly additive — still
+  // returns null when nothing matches (same fail-safe as before).
+  const patterns = [
+    /(?:call\s*quality\s*score|quality\s*score|call\s*score|score)\s*[:\-]?\s*\**\s*(\d{1,2})\s*(?:\/\s*10|out\s*of\s*10)/i,
+    /(?:call\s*quality\s*score|quality\s*score|call\s*score|score)\s*[:\-]?\s*\**\s*(\d{1,2})\b/i,
+  ];
+  for (const p of patterns) {
+    const m = text.match(p);
+    if (m) {
+      const n = parseInt(m[1], 10);
+      if (n >= 0 && n <= 10) return n;
+    }
+  }
+  return null;
 }
 
 function extractTalkTime(text, speaker) {
-  const pattern = new RegExp(`${speaker}[^\\d]*(\\d+)%`, 'i');
-  const match = text.match(pattern);
-  return match ? parseInt(match[1], 10) : null;
+  // Tolerate markdown/punctuation between the speaker word and the percentage,
+  // e.g. "Rep talk time: **38%**", "Prospect - 62 %". Additive broadening;
+  // null fail-safe preserved.
+  const patterns = [
+    new RegExp(`${speaker}[^\\d%]{0,40}?(\\d{1,3})\\s*%`, 'i'),
+    new RegExp(`(\\d{1,3})\\s*%[^\\d]{0,20}?${speaker}`, 'i'),
+  ];
+  for (const p of patterns) {
+    const m = text.match(p);
+    if (m) {
+      const n = parseInt(m[1], 10);
+      if (n >= 0 && n <= 100) return n;
+    }
+  }
+  return null;
 }
 
 function extractSpecAccuracy(text) {
@@ -142,6 +190,15 @@ router.post('/script-adherence', async (req, res, next) => {
       });
     }
 
+    // --- config gate (graceful degradation when ANTHROPIC_API_KEY missing) ---
+    if (!isConfigured()) {
+      return res.status(503).json({
+        success: false,
+        data: null,
+        error: 'analysis not configured'
+      });
+    }
+
     const systemPrompt = `You are analyzing a sales call transcript for adherence to a pre-defined script.
 
 Script talking points:
@@ -153,8 +210,8 @@ Return JSON with:
 - skipped: array of talking point indices (1-based) that were NOT mentioned
 - variance_notes: brief explanation of major deviations or strong adherence`;
 
-    const message = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+    const message = await getAnthropicClient().messages.create({
+      model: 'claude-sonnet-4-6',
       max_tokens: 1024,
       system: systemPrompt,
       messages: [

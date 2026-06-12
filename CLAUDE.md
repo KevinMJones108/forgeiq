@@ -91,7 +91,7 @@ Translation:
 
 AI Processing:
   Provider:        Anthropic Claude API
-  Model:           claude-sonnet-4-20250514
+  Model:           claude-sonnet-4-6  # was claude-sonnet-4-20250514 — EOL 2026-06-15, migrated 2026-06-12
   Location:        Node.js backend ONLY — never called from iOS directly
 
 CRM:
