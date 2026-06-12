@@ -581,6 +581,18 @@ grep -r '\.alert(' ForgeIQ/ | grep -i 'paywall\|subscription\|purchase\|premium'
 
 ---
 
+## PENDING (Kevin decisions 2026-06-12 — question-menu answers)
+
+- ELEVEN_LABS_API_KEY + PIPEDRIVE_API_TOKEN: "later, not blocking" — exist nowhere on
+  Render or local .env (searched 2026-06-12). Until set on the Render service, TTS
+  read-back and Pipedrive auto-log fail gracefully; core record→transcribe→AI-summary
+  is unaffected. When Kevin supplies them: set on srv-d8ae6f6k1jcs73fte24g, trigger a
+  deploy (env PUT alone does NOT restart the service), verify both features live.
+- Auth0 callback + logout URLs: ALREADY whitelisted in the dashboard (verified 2026-06-12)
+  — login is fully wired pending device test.
+
+---
+
 ## KEVIN'S PREFERENCES
 
 - Dark FORGE background (#1C2B2B) on all primary screens
