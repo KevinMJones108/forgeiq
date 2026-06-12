@@ -20,7 +20,7 @@ enum Constants {
     // MARK: - Auth0 Configuration
 
     static let AUTH0_DOMAIN = "dev-yjrvxlswm4yk3zz7.auth0.com"
-    static let AUTH0_CLIENT_ID = "xa9bJJdtJqWGIXRFbf9S0hzvHHUhzEBu"
+    static let AUTH0_CLIENT_ID = "xs9bJJdtJqWGIXRFbf9S0hzvHHUhzEBu"
     static let AUTH0_AUDIENCE = "https://forgeiq-974q.onrender.com"
 
     // MARK: - Brand Colors

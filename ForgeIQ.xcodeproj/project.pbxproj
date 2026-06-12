@@ -41,6 +41,8 @@
 		BA3A908C65700190794F105C /* ProductLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CC37A8CDBF0B229C9B19C82 /* ProductLibraryView.swift */; };
 		C12F1B35EEF6D55D5686486A /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29098CC3AC565919EA9C061 /* Constants.swift */; };
 		CDC954BEF2DC6EE0764558DE /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5FEA49FE159A6506CE53D39 /* HomeView.swift */; };
+		DA0CF001A001B001C001D003 /* Auth0 in Frameworks */ = {isa = PBXBuildFile; productRef = DA0CF001A001B001C001D002 /* Auth0 */; };
+		DA0CF001A001B001C001D005 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0CF001A001B001C001D004 /* LoginView.swift */; };
 		E167E59B2EE02554BF19B62F /* Transcript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973B5F87FAFFF384275659BA /* Transcript.swift */; };
 		E7E19B52FE5CF946F0A13B43 /* WaveformView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A17F5E98BF86E078CB61309 /* WaveformView.swift */; };
 		EAE5DB752799252DB03C4676 /* SpeechTranscriptionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F93B3D3E4A230BF907D43D9 /* SpeechTranscriptionManager.swift */; };
@@ -86,6 +88,7 @@
 		C0B8DAC8ABA7CB7B679F5B56 /* ElevenLabsTTSManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ElevenLabsTTSManager.swift; sourceTree = "<group>"; };
 		C29098CC3AC565919EA9C061 /* Constants.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Constants.swift; path = Shared/Constants.swift; sourceTree = "<group>"; };
 		C6505E537E59512A0F621C3F /* ScriptUploadView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ScriptUploadView.swift; sourceTree = "<group>"; };
+		DA0CF001A001B001C001D004 /* LoginView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LoginView.swift; path = Modules/Admin/Views/LoginView.swift; sourceTree = "<group>"; };
 		EE6BE9F89DA38F5D619AEC79 /* TranscriptView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TranscriptView.swift; path = Modules/VoiceCore/Views/TranscriptView.swift; sourceTree = "<group>"; };
 		F1C3BD909CF532C65AEA7AB9 /* ScriptDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ScriptDetailView.swift; sourceTree = "<group>"; };
 		F27AADD17973DF4F529737A4 /* ProductSelectorView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ProductSelectorView.swift; sourceTree = "<group>"; };
@@ -99,6 +102,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DA0CF001A001B001C001D003 /* Auth0 in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -169,6 +173,7 @@
 				B20000003 /* CallAnalysis.swift */,
 				B20000004 /* CallAnalysisViewModel.swift */,
 				B20000005 /* CallAnalysisView.swift */,
+				DA0CF001A001B001C001D004 /* LoginView.swift */,
 				A7338E17DD902B3F42F29833 /* Shared */,
 				8E00FFE16DF9B2355F66D08D /* Core */,
 				E5E9F92ED37C1734569440AF /* Modules */,
@@ -280,6 +285,9 @@
 			dependencies = (
 			);
 			name = ForgeIQ;
+			packageProductDependencies = (
+				DA0CF001A001B001C001D002 /* Auth0 */,
+			);
 			productName = ForgeIQ;
 			productReference = A30000001 /* ForgeIQ.app */;
 			productType = "com.apple.product-type.application";
@@ -308,6 +316,9 @@
 				Base,
 			);
 			mainGroup = A50000001;
+			packageReferences = (
+				DA0CF001A001B001C001D001 /* XCRemoteSwiftPackageReference "Auth0.swift" */,
+			);
 			productRefGroup = A50000003 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -372,6 +383,7 @@
 				B1AEAB6B05B8EB40A3E797FD /* ScriptSelectorView.swift in Sources */,
 				EFCCD3A65C81B6F207A5A90F /* ScriptUploadView.swift in Sources */,
 				22A23B0F23972755EA087C1A /* VoicePickerView.swift in Sources */,
+				DA0CF001A001B001C001D005 /* LoginView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -585,6 +597,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		DA0CF001A001B001C001D001 /* XCRemoteSwiftPackageReference "Auth0.swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/auth0/Auth0.swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		DA0CF001A001B001C001D002 /* Auth0 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DA0CF001A001B001C001D001 /* XCRemoteSwiftPackageReference "Auth0.swift" */;
+			productName = Auth0;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = A00000001 /* Project object */;
 }
