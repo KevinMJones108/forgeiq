@@ -33,4 +33,4 @@ databases:
   - name: forgeiq-db
     databaseName: forgeiq
     user: forgeiq_user
-    plan: basic_256mb
+    plan: free
