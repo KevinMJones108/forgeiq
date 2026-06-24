@@ -115,13 +115,22 @@ ${JSON.stringify(product_specs, null, 2)}`;
 
 // Helper functions to extract structured data from Claude's text response
 function extractScore(text) {
-  // Broadened to tolerate Claude markdown: "**Call Quality Score:** 7/10",
-  // "Score: 7 out of 10", "Quality Score - 7". Strictly additive — still
-  // returns null when nothing matches (same fail-safe as before).
+  // Guard: null/undefined text (e.g. empty Claude response) returns 0 explicitly.
+  if (!text || typeof text !== 'string') {
+    console.warn('[extractScore] received null/undefined/non-string text — returning 0');
+    return 0;
+  }
+
+  // Ordered from most specific to least specific.
+  // Pattern 1: "Call Quality Score: 7/10" or "Score: 7 out of 10" — anchored to /10 or "out of 10"
+  // Pattern 2: "**Call Quality Score:** 7" — requires the score label words, not bare "score"
+  // Pattern 3: JSON-style `"call_score": 7` from structured Claude output
   const patterns = [
-    /(?:call\s*quality\s*score|quality\s*score|call\s*score|score)\s*[:\-]?\s*\**\s*(\d{1,2})\s*(?:\/\s*10|out\s*of\s*10)/i,
-    /(?:call\s*quality\s*score|quality\s*score|call\s*score|score)\s*[:\-]?\s*\**\s*(\d{1,2})\b/i,
+    /(?:call\s*quality\s*score|quality\s*score|call\s*score)\s*[:\-]?\s*\**\s*(\d{1,2})\s*(?:\/\s*10|out\s*of\s*10)/i,
+    /(?:call\s*quality\s*score|quality\s*score|call\s*score)\s*[:\-]?\s*\**\s*(\d{1,2})\b/i,
+    /"?call_score"?\s*:\s*(\d{1,2})\b/i,
   ];
+
   for (const p of patterns) {
     const m = text.match(p);
     if (m) {
@@ -129,7 +138,11 @@ function extractScore(text) {
       if (n >= 0 && n <= 10) return n;
     }
   }
-  return null;
+
+  // No pattern matched — log raw AI response snippet so failures are debuggable.
+  const snippet = text.slice(0, 300).replace(/\n/g, ' ');
+  console.warn(`[extractScore] no score found in AI response. First 300 chars: "${snippet}"`);
+  return 0;
 }
 
 function extractTalkTime(text, speaker) {

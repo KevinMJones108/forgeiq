@@ -115,7 +115,6 @@
 				172D11109A931B59A4EF7010 /* ProductLibraryViewModel.swift */,
 				6F44CC8CF0A3FF45275BB1E5 /* ScriptLibraryViewModel.swift */,
 			);
-			name = ViewModels;
 			path = ViewModels;
 			sourceTree = "<group>";
 		};
@@ -124,7 +123,6 @@
 			children = (
 				1EB5DF76C15C3347CCF1C37A /* VoicePickerView.swift */,
 			);
-			name = Views;
 			path = Views;
 			sourceTree = "<group>";
 		};
@@ -133,7 +131,6 @@
 			children = (
 				BA327DF59982B36A99F658CF /* ElevenLabs */,
 			);
-			name = Core;
 			path = Core;
 			sourceTree = "<group>";
 		};
@@ -142,6 +139,7 @@
 			children = (
 				A50000002 /* ForgeIQ */,
 				A50000003 /* Products */,
+				B6141ABA2FDC63B200CF205D /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -206,12 +204,19 @@
 			name = Shared;
 			sourceTree = "<group>";
 		};
+		B6141ABA2FDC63B200CF205D /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				A20000006 /* ProfileTabView.swift */,
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
 		BA327DF59982B36A99F658CF /* ElevenLabs */ = {
 			isa = PBXGroup;
 			children = (
 				C0B8DAC8ABA7CB7B679F5B56 /* ElevenLabsTTSManager.swift */,
 			);
-			name = ElevenLabs;
 			path = ElevenLabs;
 			sourceTree = "<group>";
 		};
@@ -221,7 +226,6 @@
 				2704E29429B30DAA73F155F1 /* ViewModels */,
 				DDF50D9EF2080301E21D3146 /* Views */,
 			);
-			name = SalesForge;
 			path = SalesForge;
 			sourceTree = "<group>";
 		};
@@ -237,7 +241,6 @@
 				4EBC024562063018C5EFA997 /* ScriptSelectorView.swift */,
 				C6505E537E59512A0F621C3F /* ScriptUploadView.swift */,
 			);
-			name = Views;
 			path = Views;
 			sourceTree = "<group>";
 		};
@@ -247,7 +250,6 @@
 				C9689FC6FE15B6A89EB777EF /* SalesForge */,
 				F4B68265D127E99BD689BB3A /* VoiceCore */,
 			);
-			name = Modules;
 			path = Modules;
 			sourceTree = "<group>";
 		};
@@ -256,7 +258,6 @@
 			children = (
 				85D5ABFAE3B4695CD8755273 /* Views */,
 			);
-			name = VoiceCore;
 			path = VoiceCore;
 			sourceTree = "<group>";
 		};
@@ -317,7 +318,7 @@
 			);
 			mainGroup = A50000001;
 			packageReferences = (
-				DA0CF001A001B001C001D001 /* XCRemoteSwiftPackageReference "Auth0.swift" */,
+				DA0CF001A001B001C001D001 /* XCRemoteSwiftPackageReference "Auth0" */,
 			);
 			productRefGroup = A50000003 /* Products */;
 			projectDirPath = "";
@@ -517,7 +518,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = 8N4W6829PF;
+				DEVELOPMENT_TEAM = CA23YGW5LV;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = ForgeIQ/Resources/Info.plist;
@@ -550,7 +551,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = 8N4W6829PF;
+				DEVELOPMENT_TEAM = CA23YGW5LV;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = ForgeIQ/Resources/Info.plist;
@@ -599,7 +600,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		DA0CF001A001B001C001D001 /* XCRemoteSwiftPackageReference "Auth0.swift" */ = {
+		DA0CF001A001B001C001D001 /* XCRemoteSwiftPackageReference "Auth0" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/auth0/Auth0.swift";
 			requirement = {
@@ -612,7 +613,7 @@
 /* Begin XCSwiftPackageProductDependency section */
 		DA0CF001A001B001C001D002 /* Auth0 */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = DA0CF001A001B001C001D001 /* XCRemoteSwiftPackageReference "Auth0.swift" */;
+			package = DA0CF001A001B001C001D001 /* XCRemoteSwiftPackageReference "Auth0" */;
 			productName = Auth0;
 		};
 /* End XCSwiftPackageProductDependency section */
