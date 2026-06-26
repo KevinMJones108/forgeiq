@@ -6,6 +6,7 @@ const express = require('express');
 const router = express.Router();
 const Anthropic = require('@anthropic-ai/sdk');
 const { aiRateLimit } = require('../middleware/aiRateLimit.middleware');
+const { checkJwt } = require('../middleware/auth.middleware');
 
 // Graceful degradation (Gate 3 support): never construct the client at module
 // load and never call Anthropic without a key. Missing ANTHROPIC_API_KEY ->
@@ -25,8 +26,12 @@ function getAnthropicClient() {
   return anthropicClient;
 }
 
-// Guest AI rate limiter — gates every LLM endpoint in this router (these call
-// the paid Anthropic API and are currently reachable without auth).
+// Auth gate FIRST — every LLM endpoint in this router calls the paid Anthropic
+// API, so require a valid Auth0 JWT before any work (mirrors voice.routes.js).
+// Unauthenticated requests get 401 before the rate limiter or any LLM call.
+router.use(checkJwt);
+
+// Guest AI rate limiter — per-IP throttle behind the auth gate.
 router.use(aiRateLimit);
 
 // POST /api/v1/ai/call-summary

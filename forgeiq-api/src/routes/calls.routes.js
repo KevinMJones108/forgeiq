@@ -11,6 +11,7 @@ const {
 } = require('../services/objectionAnalysisService');
 const pipedrive = require('../services/pipedriveService');
 const { aiRateLimit } = require('../middleware/aiRateLimit.middleware');
+const { checkJwt } = require('../middleware/auth.middleware');
 
 const MAX_TRANSCRIPT_CHARS = 200000; // ~ generous upper bound; guards abuse.
 
@@ -28,7 +29,7 @@ const MAX_TRANSCRIPT_CHARS = 200000; // ~ generous upper bound; guards abuse.
 // (dealId/personId) is supplied AND PIPEDRIVE_API_TOKEN is configured. Any
 // Pipedrive failure is swallowed — the analysis response is returned regardless.
 // Guests with no target / no token get exactly today's behaviour.
-router.post('/analyze', aiRateLimit, async (req, res, next) => {
+router.post('/analyze', checkJwt, aiRateLimit, async (req, res, next) => {
   try {
     const { transcript, speakerLabels, dealId, personId } = req.body || {};
 
