@@ -275,4 +275,66 @@ Return JSON with:
   }
 });
 
+// ── GENERAL MEETING SUMMARY (repositioned product — the shipped general-recorder path) ──
+// PRD-general-meeting-recorder.md R2. Sales endpoints above (/call-summary, /script-adherence) are
+// PARKED for the future Sales/Business tier — NOT deleted. This is the general, non-sales summary.
+// POST /api/v1/ai/meeting-summary  { transcript } -> { summary, key_points, action_items, decisions, next_steps }
+router.post('/meeting-summary', async (req, res, next) => {
+  try {
+    const { transcript } = req.body;
+    if (!transcript || typeof transcript !== 'string' || !transcript.trim()) {
+      return res.status(400).json({ success: false, data: null, error: 'transcript is required' });
+    }
+    if (!isConfigured()) {
+      return res.status(503).json({ success: false, data: null, error: 'analysis not configured' });
+    }
+    const systemPrompt = `You are an expert meeting-notes assistant. Read the meeting or call transcript and return ONLY a JSON object (no prose, no markdown fences) with exactly these keys:
+{
+  "summary": "2-3 sentence executive summary of the meeting",
+  "key_points": ["the most important points discussed"],
+  "action_items": [{"text": "what needs doing", "owner": "name or null", "due": "date/relative or null"}],
+  "decisions": ["decisions that were made"],
+  "next_steps": ["concrete recommended next steps"]
+}
+Use an empty array [] for any section with nothing to report. Never invent content that is not in the transcript.`;
+
+    const message = await getAnthropicClient().messages.create({
+      model: 'claude-sonnet-4-6',
+      max_tokens: 2048,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: `Transcript:\n\n${transcript}` }],
+    });
+    const analysisText = (message.content && message.content[0] && message.content[0].text) || '';
+    res.json({ success: true, data: parseMeetingSummary(analysisText), error: null });
+  } catch (error) {
+    console.error('AI meeting-summary error:', error);
+    next(error);
+  }
+});
+
+// Robust JSON extraction with a safe fallback that NEVER fabricates structure (truth-first).
+function parseMeetingSummary(text) {
+  const empty = { summary: '', key_points: [], action_items: [], decisions: [], next_steps: [], raw_analysis: text || '' };
+  if (!text || typeof text !== 'string') return empty;
+  try {
+    const fence = text.match(/```json\s*([\s\S]+?)\s*```/i);
+    const braces = text.match(/\{[\s\S]+\}/);
+    const jsonStr = fence ? fence[1] : (braces ? braces[0] : null);
+    if (!jsonStr) return { ...empty, summary: text.trim().slice(0, 500) };
+    const o = JSON.parse(jsonStr);
+    return {
+      summary: typeof o.summary === 'string' ? o.summary : '',
+      key_points: Array.isArray(o.key_points) ? o.key_points : [],
+      action_items: Array.isArray(o.action_items) ? o.action_items : [],
+      decisions: Array.isArray(o.decisions) ? o.decisions : [],
+      next_steps: Array.isArray(o.next_steps) ? o.next_steps : [],
+      raw_analysis: text,
+    };
+  } catch (e) {
+    return { ...empty, summary: text.trim().slice(0, 500) };
+  }
+}
+// Expose the parser for unit testing without changing the router export.
+router.parseMeetingSummary = parseMeetingSummary;
+
 module.exports = router;
